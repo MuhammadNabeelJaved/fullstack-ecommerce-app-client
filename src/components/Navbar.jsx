@@ -1,156 +1,160 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router';
-import { ShoppingCart, Search, Menu, X } from 'lucide-react';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Menu, X, ShoppingCart, Search, User } from "lucide-react";
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "Products", href: "/products" },
+    { name: "Categories", href: "/categories" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
+  ];
 
-  // Active link style function
-  const getNavLinkClass = ({ isActive }) => {
-    return isActive 
-      ? "text-indigo-600 font-medium" 
-      : "text-gray-700 hover:text-indigo-600 font-medium";
+  const toggleSearch = () => {
+    setShowSearch(!showSearch);
   };
 
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-white shadow-md fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
-            <NavLink to="/" className="text-xl font-bold text-indigo-600">
-              ShopNow
-            </NavLink>
+        <div className="flex justify-between h-16">
+          {/* Logo and Desktop Navigation */}
+          <div className="flex items-center">
+            <a href="/" className="flex-shrink-0 flex items-center">
+              <span className="text-2xl font-bold text-indigo-600">
+                ShopEase
+              </span>
+            </a>
+            <div className="hidden md:ml-6 md:flex md:space-x-8">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-indigo-600 transition-colors duration-200"
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
           </div>
 
-          {/* Navigation Items - Always visible on desktop */}
-          <div className="hidden sm:flex items-center space-x-4 md:space-x-8">
-            <NavLink to="/" className={getNavLinkClass}>Home</NavLink>
-            <NavLink to="/products" className={getNavLinkClass}>Products</NavLink>
-            <NavLink to="/shop" className={getNavLinkClass}>Shop Now</NavLink>
-            <NavLink to="/contact" className={getNavLinkClass}>Contact Us</NavLink>
-            <NavLink to="/about" className={getNavLinkClass}>About Us</NavLink>
-          </div>
-
-          {/* Right Side Items */}
-          <div className="hidden sm:flex items-center space-x-4">
-            {/* Search Bar */}
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
+          {/* Right side icons */}
+          <div className="flex items-center">
+            <div className="hidden md:flex items-center space-x-4">
+              <div className="relative flex items-center">
+                <button
+                  className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200"
+                  onClick={toggleSearch}
+                >
+                  <Search className="h-5 w-5" />
+                </button>
+                {showSearch && (
+                  <motion.div
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: "250px", opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute right-10 top-0 z-10"
+                  >
+                    <input
+                      type="text"
+                      placeholder="Search products..."
+                      className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      autoFocus
+                    />
+                  </motion.div>
+                )}
               </div>
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-              />
+              <button className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200">
+                <User className="h-5 w-5" />
+              </button>
+              <button className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 relative">
+                <ShoppingCart className="h-5 w-5" />
+                <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  0
+                </span>
+              </button>
             </div>
 
-            {/* Sign In/Up */}
-            <NavLink to="/signin" className="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-              Sign In
-            </NavLink>
-            <NavLink to="/signup" className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-              Sign Up
-            </NavLink>
-
-            {/* Cart */}
-            <div className="relative">
-              <NavLink to="/cart" className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 block">
-                <ShoppingCart className="h-5 w-5 text-gray-600" />
-              </NavLink>
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">3</span>
+            {/* Mobile menu button */}
+            <div className="md:hidden flex items-center">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200"
+              >
+                {isOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </button>
             </div>
-          </div>
-
-          {/* Mobile menu button and cart */}
-          <div className="sm:hidden flex items-center space-x-4">
-            {/* Cart for mobile */}
-            <div className="relative">
-              <NavLink to="/cart" className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 block">
-                <ShoppingCart className="h-5 w-5 text-gray-600" />
-              </NavLink>
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">3</span>
-            </div>
-            
-            {/* Mobile menu toggle */}
-            <button
-              onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-              aria-expanded={isMenuOpen}
-            >
-              <span className="sr-only">Open main menu</span>
-              {isMenuOpen ? (
-                <X className="block h-6 w-6" />
-              ) : (
-                <Menu className="block h-6 w-6" />
-              )}
-            </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu with transition */}
-      <div 
-        className={`sm:hidden bg-white overflow-hidden transition-all duration-300 ease-in-out ${
-          isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        }`}
+      {/* Mobile menu */}
+      <motion.div
+        initial={false}
+        animate={isOpen ? "open" : "closed"}
+        variants={{
+          open: { opacity: 1, height: "auto" },
+          closed: { opacity: 0, height: 0 },
+        }}
+        transition={{ duration: 0.3 }}
+        className="md:hidden overflow-hidden"
       >
-        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          <NavLink to="/" className={({ isActive }) => 
-            `block px-3 py-2 rounded-md text-base ${isActive ? 'text-indigo-600 bg-gray-50' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'}`
-          }>
-            Home
-          </NavLink>
-          <NavLink to="/products" className={({ isActive }) => 
-            `block px-3 py-2 rounded-md text-base ${isActive ? 'text-indigo-600 bg-gray-50' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'}`
-          }>
-            Products
-          </NavLink>
-          <NavLink to="/shop" className={({ isActive }) => 
-            `block px-3 py-2 rounded-md text-base ${isActive ? 'text-indigo-600 bg-gray-50' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'}`
-          }>
-            Shop Now
-          </NavLink>
-          <NavLink to="/contact" className={({ isActive }) => 
-            `block px-3 py-2 rounded-md text-base ${isActive ? 'text-indigo-600 bg-gray-50' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'}`
-          }>
-            Contact Us
-          </NavLink>
-          <NavLink to="/about" className={({ isActive }) => 
-            `block px-3 py-2 rounded-md text-base ${isActive ? 'text-indigo-600 bg-gray-50' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'}`
-          }>
-            About Us
-          </NavLink>
-        </div>
-        <div className="pt-4 pb-3 border-t border-gray-200">
-          <div className="px-4 space-y-3">
-            {/* Search Bar */}
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
+        <div className="px-2 pt-2 pb-3 space-y-1">
+          {navLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              className="block px-3 py-2 text-base font-medium text-gray-900 hover:text-indigo-600 hover:bg-gray-50 transition-colors duration-200"
+            >
+              {link.name}
+            </a>
+          ))}
+          <div className="pt-4 pb-3 border-t border-gray-200">
+            <div className="flex items-center px-5 space-x-4">
+              <div className="relative flex-1">
+                <button
+                  className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200"
+                  onClick={toggleSearch}
+                >
+                  <Search className="h-5 w-5" />
+                </button>
+                {showSearch && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-2"
+                  >
+                    <input
+                      type="text"
+                      placeholder="Search products..."
+                      className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      autoFocus
+                    />
+                  </motion.div>
+                )}
               </div>
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-              />
-            </div>
-            <div className="flex space-x-3">
-              <NavLink to="/signin" className="flex-1 text-center bg-white border border-indigo-600 text-indigo-600 px-4 py-2 rounded-md text-sm font-medium">
-                Sign In
-              </NavLink>
-              <NavLink to="/signup" className="flex-1 text-center bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium">
-                Sign Up
-              </NavLink>
+              <button className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200">
+                <User className="h-5 w-5" />
+              </button>
+              <button className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 relative">
+                <ShoppingCart className="h-5 w-5" />
+                <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  0
+                </span>
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </nav>
   );
 };

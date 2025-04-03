@@ -18,22 +18,22 @@ const Products = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1,
+        staggerChildren: 0.1,
+        delayChildren: 0.05,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { y: 50, opacity: 0 },
+    hidden: { y: 30, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
         type: "spring",
-        stiffness: 100,
-        damping: 12,
-        duration: 0.6,
+        stiffness: 80,
+        damping: 15,
+        duration: 0.4,
       },
     },
   };
@@ -129,35 +129,22 @@ const Products = () => {
           variants={containerVariants}
           initial="hidden"
           animate={controls}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-16"
         >
           {products.map((product) => (
             <motion.div
               key={product.id}
               variants={itemVariants}
-              whileHover={{ 
-                y: -12, 
-                scale: 1.03,
-                transition: { 
-                  type: "spring", 
-                  stiffness: 300, 
-                  damping: 10 
-                } 
-              }}
               className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-gray-100"
             >
               <div className="relative overflow-hidden rounded-t-2xl h-48 sm:h-56">
                 <span className="absolute top-3 left-3 z-10 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full">
                   New
                 </span>
-                <motion.img
+                <img
                   src={product.image}
                   alt={product.name}
                   className="object-cover w-full h-full"
-                  whileHover={{ 
-                    scale: 1.15,
-                    transition: { duration: 0.7 }
-                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
@@ -187,40 +174,28 @@ const Products = () => {
                   </div>
 
                   <div className="flex justify-between gap-3">
-                    <motion.button
-                      whileHover={{ scale: 1.05, backgroundColor: "#4338ca" }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex-1 bg-indigo-600 text-white py-2.5 px-4 rounded-lg font-medium transition-all duration-300 hover:bg-indigo-700 flex items-center justify-center"
+                    <button
+                      className="flex-1 bg-indigo-600 text-white py-2.5 px-4 rounded-lg font-medium transition-all duration-200 hover:bg-indigo-700 flex items-center justify-center"
                     >
                       <ShoppingBag className="w-4 h-4 mr-2" />
                       Shop It
-                    </motion.button>
+                    </button>
 
-                    <motion.button
-                      whileHover={{ scale: 1.1, backgroundColor: "#e5e7eb" }}
-                      whileTap={{ scale: 0.9 }}
-                      className="bg-gray-100 hover:bg-gray-200 p-2.5 rounded-lg transition-colors duration-300"
+                    <button
+                      className="bg-gray-100 hover:bg-gray-200 p-2.5 rounded-lg transition-colors duration-200"
                     >
                       <ShoppingCart className="w-5 h-5 text-gray-700" />
-                    </motion.button>
+                    </button>
                   </div>
                 </div>
               </div>
-
-              <motion.div
-                className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-0 group-hover:bg-opacity-5 transition-all duration-300 pointer-events-none"
-                initial={{ opacity: 0 }}
-                whileHover={{ opacity: 1 }}
-              />
             </motion.div>
           ))}
         </motion.div>
 
-        <div className="mt-12 text-center">
-          <motion.button
-            whileHover={{ scale: 1.05, backgroundColor: "#111827" }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-gray-900 hover:bg-black text-white px-8 py-3 rounded-full font-medium transition-all duration-300 inline-flex items-center"
+        <div className="text-center">
+          <button
+            className="bg-gray-900 hover:bg-black text-white px-8 py-3 rounded-full font-medium transition-all duration-200 inline-flex items-center"
           >
             View All Products
             <svg
@@ -237,7 +212,7 @@ const Products = () => {
                 d="M14 5l7 7m0 0l-7 7m7-7H3"
               ></path>
             </svg>
-          </motion.button>
+          </button>
         </div>
       </div>
     </div>
