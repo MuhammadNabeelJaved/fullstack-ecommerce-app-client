@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useForm } from "react-hook-form";
 import {
   Mail,
   Phone,
@@ -12,35 +13,29 @@ import {
 } from "lucide-react";
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const { 
+    register, 
+    handleSubmit, 
+    reset,
+    formState: { errors } 
+  } = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+    }
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const onSubmit = (data) => {
     setIsSubmitting(true);
     // Simulate form submission
     setTimeout(() => {
       setIsSubmitting(false);
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      });
+      reset();
+      console.log("Form submitted:", data);
     }, 2000);
   };
 
@@ -113,7 +108,7 @@ const Contact = () => {
             animate="animate"
             className="bg-white rounded-2xl shadow-sm p-8"
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.2 }}
@@ -124,12 +119,18 @@ const Contact = () => {
                 </label>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  required
+                  {...register("name", { 
+                    required: "Name is required",
+                    minLength: {
+                      value: 2,
+                      message: "Name must be at least 2 characters"
+                    }
+                  })}
+                  className={`w-full px-4 py-2 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
                 />
+                {errors.name && (
+                  <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+                )}
               </motion.div>
 
               <motion.div
@@ -142,12 +143,18 @@ const Contact = () => {
                 </label>
                 <input
                   type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  required
+                  {...register("email", { 
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Invalid email address"
+                    }
+                  })}
+                  className={`w-full px-4 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                )}
               </motion.div>
 
               <motion.div
@@ -160,12 +167,18 @@ const Contact = () => {
                 </label>
                 <input
                   type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  required
+                  {...register("subject", { 
+                    required: "Subject is required",
+                    minLength: {
+                      value: 5,
+                      message: "Subject must be at least 5 characters"
+                    }
+                  })}
+                  className={`w-full px-4 py-2 border ${errors.subject ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
                 />
+                {errors.subject && (
+                  <p className="text-red-500 text-xs mt-1">{errors.subject.message}</p>
+                )}
               </motion.div>
 
               <motion.div
@@ -177,13 +190,19 @@ const Contact = () => {
                   Message
                 </label>
                 <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
+                  {...register("message", { 
+                    required: "Message is required",
+                    minLength: {
+                      value: 10,
+                      message: "Message must be at least 10 characters"
+                    }
+                  })}
                   rows="4"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  required
+                  className={`w-full px-4 py-2 border ${errors.message ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
                 />
+                {errors.message && (
+                  <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>
+                )}
               </motion.div>
 
               <motion.button

@@ -1,64 +1,34 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { CreditCard, Truck, Shield, Lock } from "lucide-react";
+import { useForm } from "react-hook-form";
 
 const Checkout = () => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    address: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    cardNumber: "",
-    cardName: "",
-    expiryDate: "",
-    cvv: "",
+  const [activeStep, setActiveStep] = useState(1);
+  
+  const { 
+    register, 
+    handleSubmit, 
+    formState: { errors } 
+  } = useForm({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      address: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      cardNumber: "",
+      cardName: "",
+      expiryDate: "",
+      cvv: "",
+    }
   });
 
-  const [activeStep, setActiveStep] = useState(1);
-  const [errors, setErrors] = useState({});
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear error when user types
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.firstName) newErrors.firstName = "First name is required";
-    if (!formData.lastName) newErrors.lastName = "Last name is required";
-    if (!formData.email) newErrors.email = "Email is required";
-    if (!formData.address) newErrors.address = "Address is required";
-    if (!formData.city) newErrors.city = "City is required";
-    if (!formData.state) newErrors.state = "State is required";
-    if (!formData.zipCode) newErrors.zipCode = "ZIP code is required";
-    if (!formData.cardNumber) newErrors.cardNumber = "Card number is required";
-    if (!formData.cardName) newErrors.cardName = "Card name is required";
-    if (!formData.expiryDate) newErrors.expiryDate = "Expiry date is required";
-    if (!formData.cvv) newErrors.cvv = "CVV is required";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      // Proceed with checkout
-      console.log("Form submitted:", formData);
-    }
+  const onSubmit = (data) => {
+    // Proceed with checkout
+    console.log("Form submitted:", data);
   };
 
   const fadeInUp = {
@@ -126,7 +96,7 @@ const Checkout = () => {
             animate="animate"
             className="lg:col-span-2"
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Shipping Information */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -146,16 +116,14 @@ const Checkout = () => {
                     </label>
                     <input
                       type="text"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleChange}
+                      {...register("firstName", { required: "First name is required" })}
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
                         errors.firstName ? "border-red-500" : "border-gray-300"
                       }`}
                     />
                     {errors.firstName && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors.firstName}
+                        {errors.firstName.message}
                       </p>
                     )}
                   </div>
@@ -165,16 +133,14 @@ const Checkout = () => {
                     </label>
                     <input
                       type="text"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleChange}
+                      {...register("lastName", { required: "Last name is required" })}
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
                         errors.lastName ? "border-red-500" : "border-gray-300"
                       }`}
                     />
                     {errors.lastName && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors.lastName}
+                        {errors.lastName.message}
                       </p>
                     )}
                   </div>
@@ -184,15 +150,19 @@ const Checkout = () => {
                     </label>
                     <input
                       type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
+                      {...register("email", { 
+                        required: "Email is required",
+                        pattern: {
+                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                          message: "Invalid email address"
+                        }
+                      })}
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
                         errors.email ? "border-red-500" : "border-gray-300"
                       }`}
                     />
                     {errors.email && (
-                      <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                      <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
                     )}
                   </div>
                   <div className="sm:col-span-2">
@@ -201,15 +171,13 @@ const Checkout = () => {
                     </label>
                     <input
                       type="text"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleChange}
+                      {...register("address", { required: "Address is required" })}
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
                         errors.address ? "border-red-500" : "border-gray-300"
                       }`}
                     />
                     {errors.address && (
-                      <p className="mt-1 text-sm text-red-500">{errors.address}</p>
+                      <p className="mt-1 text-sm text-red-500">{errors.address.message}</p>
                     )}
                   </div>
                   <div>
@@ -218,15 +186,13 @@ const Checkout = () => {
                     </label>
                     <input
                       type="text"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleChange}
+                      {...register("city", { required: "City is required" })}
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
                         errors.city ? "border-red-500" : "border-gray-300"
                       }`}
                     />
                     {errors.city && (
-                      <p className="mt-1 text-sm text-red-500">{errors.city}</p>
+                      <p className="mt-1 text-sm text-red-500">{errors.city.message}</p>
                     )}
                   </div>
                   <div>
@@ -235,15 +201,13 @@ const Checkout = () => {
                     </label>
                     <input
                       type="text"
-                      name="state"
-                      value={formData.state}
-                      onChange={handleChange}
+                      {...register("state", { required: "State is required" })}
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
                         errors.state ? "border-red-500" : "border-gray-300"
                       }`}
                     />
                     {errors.state && (
-                      <p className="mt-1 text-sm text-red-500">{errors.state}</p>
+                      <p className="mt-1 text-sm text-red-500">{errors.state.message}</p>
                     )}
                   </div>
                   <div>
@@ -252,15 +216,13 @@ const Checkout = () => {
                     </label>
                     <input
                       type="text"
-                      name="zipCode"
-                      value={formData.zipCode}
-                      onChange={handleChange}
+                      {...register("zipCode", { required: "ZIP code is required" })}
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
                         errors.zipCode ? "border-red-500" : "border-gray-300"
                       }`}
                     />
                     {errors.zipCode && (
-                      <p className="mt-1 text-sm text-red-500">{errors.zipCode}</p>
+                      <p className="mt-1 text-sm text-red-500">{errors.zipCode.message}</p>
                     )}
                   </div>
                 </div>
@@ -286,9 +248,13 @@ const Checkout = () => {
                     </label>
                     <input
                       type="text"
-                      name="cardNumber"
-                      value={formData.cardNumber}
-                      onChange={handleChange}
+                      {...register("cardNumber", { 
+                        required: "Card number is required",
+                        pattern: {
+                          value: /^[0-9]{16}$/,
+                          message: "Please enter a valid 16-digit card number"
+                        }
+                      })}
                       placeholder="1234 5678 9012 3456"
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
                         errors.cardNumber ? "border-red-500" : "border-gray-300"
@@ -296,7 +262,7 @@ const Checkout = () => {
                     />
                     {errors.cardNumber && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors.cardNumber}
+                        {errors.cardNumber.message}
                       </p>
                     )}
                   </div>
@@ -306,15 +272,13 @@ const Checkout = () => {
                     </label>
                     <input
                       type="text"
-                      name="cardName"
-                      value={formData.cardName}
-                      onChange={handleChange}
+                      {...register("cardName", { required: "Name on card is required" })}
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
                         errors.cardName ? "border-red-500" : "border-gray-300"
                       }`}
                     />
                     {errors.cardName && (
-                      <p className="mt-1 text-sm text-red-500">{errors.cardName}</p>
+                      <p className="mt-1 text-sm text-red-500">{errors.cardName.message}</p>
                     )}
                   </div>
                   <div>
@@ -323,9 +287,13 @@ const Checkout = () => {
                     </label>
                     <input
                       type="text"
-                      name="expiryDate"
-                      value={formData.expiryDate}
-                      onChange={handleChange}
+                      {...register("expiryDate", { 
+                        required: "Expiry date is required",
+                        pattern: {
+                          value: /^(0[1-9]|1[0-2])\/([0-9]{2})$/,
+                          message: "Please use MM/YY format"
+                        }
+                      })}
                       placeholder="MM/YY"
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
                         errors.expiryDate ? "border-red-500" : "border-gray-300"
@@ -333,7 +301,7 @@ const Checkout = () => {
                     />
                     {errors.expiryDate && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errors.expiryDate}
+                        {errors.expiryDate.message}
                       </p>
                     )}
                   </div>
@@ -343,16 +311,20 @@ const Checkout = () => {
                     </label>
                     <input
                       type="text"
-                      name="cvv"
-                      value={formData.cvv}
-                      onChange={handleChange}
+                      {...register("cvv", { 
+                        required: "CVV is required",
+                        pattern: {
+                          value: /^[0-9]{3,4}$/,
+                          message: "CVV must be 3 or 4 digits"
+                        }
+                      })}
                       placeholder="123"
                       className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
                         errors.cvv ? "border-red-500" : "border-gray-300"
                       }`}
                     />
                     {errors.cvv && (
-                      <p className="mt-1 text-sm text-red-500">{errors.cvv}</p>
+                      <p className="mt-1 text-sm text-red-500">{errors.cvv.message}</p>
                     )}
                   </div>
                 </div>
