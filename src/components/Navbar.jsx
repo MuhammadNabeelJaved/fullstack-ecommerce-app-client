@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router";
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { selectCartItems } from "../redux/features/cartSlice.js";
+import { setSearchQuery, toggleSearch, closeSearch, selectIsSearchOpen, selectSearchQuery } from "../redux/features/searchSlice.js";
 import { Menu, X, ShoppingCart, Search, User, LogIn } from "lucide-react";
+import SearchResults from "./SearchResults.jsx";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
+  const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
+  const isSearchOpen = useSelector(selectIsSearchOpen);
+  const searchQuery = useSelector(selectSearchQuery);
+  const searchInputRef = useRef(null);
+  const searchContainerRef = useRef(null);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -18,9 +24,36 @@ const Navbar = () => {
     { name: "Contact", href: "/contact" },
   ];
 
-  const toggleSearch = () => {
-    setShowSearch(!showSearch);
+  const handleToggleSearch = () => {
+    dispatch(toggleSearch());
+    if (!isSearchOpen && searchInputRef.current) {
+      setTimeout(() => {
+        searchInputRef.current.focus();
+      }, 100);
+    }
   };
+
+  const handleSearchChange = (e) => {
+    dispatch(setSearchQuery(e.target.value));
+  };
+
+  const handleClickOutside = (event) => {
+    if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+      dispatch(closeSearch());
+    }
+  };
+
+  useEffect(() => {
+    if (isSearchOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSearchOpen]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -53,14 +86,14 @@ const Navbar = () => {
           {/* Right side icons */}
           <div className="flex items-center">
             <div className="hidden md:flex items-center space-x-4">
-              <div className="relative flex items-center">
+              <div className="relative flex items-center" ref={searchContainerRef}>
                 <button
                   className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200"
-                  onClick={toggleSearch}
+                  onClick={handleToggleSearch}
                 >
                   <Search className="h-5 w-5" />
                 </button>
-                {showSearch && (
+                {isSearchOpen && (
                   <motion.div
                     initial={{ width: 0, opacity: 0 }}
                     animate={{ width: "250px", opacity: 1 }}
@@ -69,12 +102,16 @@ const Navbar = () => {
                   >
                     <input
                       type="text"
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                      ref={searchInputRef}
                       placeholder="Search products..."
                       className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       autoFocus
                     />
                   </motion.div>
                 )}
+                <SearchResults isVisible={isSearchOpen && searchQuery.trim().length > 0} />
               </div>
               <div className="relative group">
                 <button className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 flex items-center">
@@ -155,14 +192,14 @@ const Navbar = () => {
           ))}
           <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="flex items-center px-5 space-x-4">
-              <div className="relative flex-1">
+              <div className="relative flex-1" ref={searchContainerRef}>
                 <button
                   className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200"
-                  onClick={toggleSearch}
+                  onClick={handleToggleSearch}
                 >
                   <Search className="h-5 w-5" />
                 </button>
-                {showSearch && (
+                {isSearchOpen && (
                   <motion.div
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
@@ -171,12 +208,15 @@ const Navbar = () => {
                   >
                     <input
                       type="text"
+                      value={searchQuery}
+                      onChange={handleSearchChange}
                       placeholder="Search products..."
                       className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       autoFocus
                     />
                   </motion.div>
                 )}
+                <SearchResults isVisible={isSearchOpen && searchQuery.trim().length > 0} />
               </div>
               <Link
                 to="/signin"
