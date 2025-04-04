@@ -176,7 +176,7 @@ const Reviews = () => {
               <select
                 value={selectedRating}
                 onChange={(e) => setSelectedRating(e.target.value)}
-                className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:ring-2 focus:ring-indigo-500 focus:border-transparent cursor-pointer"
               >
                 <option value="all">All Ratings</option>
                 <option value="5">5 Stars</option>
@@ -185,7 +185,7 @@ const Reviews = () => {
                 <option value="2">2 Stars</option>
                 <option value="1">1 Star</option>
               </select>
-              <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+              <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none cursor-pointer" />
             </div>
 
             {/* Sort By */}
@@ -193,13 +193,13 @@ const Reviews = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 focus:ring-2 focus:ring-indigo-500 focus:border-transparent cursor-pointer"
               >
                 <option value="recent">Most Recent</option>
                 <option value="helpful">Most Helpful</option>
                 <option value="rating">Highest Rating</option>
               </select>
-              <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+              <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none cursor-pointer" />
             </div>
           </div>
         </motion.div>
@@ -245,7 +245,7 @@ const Reviews = () => {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex items-center text-gray-600 hover:text-indigo-600"
+                        className="flex items-center text-gray-600 hover:text-indigo-600 transition-colors cursor-pointer"
                       >
                         <ThumbsUp className="h-5 w-5 mr-1" />
                         <span>{review.likes}</span>
@@ -253,7 +253,7 @@ const Reviews = () => {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex items-center text-gray-600 hover:text-indigo-600"
+                        className="flex items-center text-gray-600 hover:text-indigo-600 transition-colors cursor-pointer"
                         onClick={() =>
                           setExpandedReview(
                             expandedReview === review.id ? null : review.id

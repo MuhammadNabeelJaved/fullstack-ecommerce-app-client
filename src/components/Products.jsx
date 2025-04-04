@@ -175,14 +175,14 @@ const Products = () => {
 
                   <div className="flex justify-between gap-3">
                     <button
-                      className="flex-1 bg-indigo-600 text-white py-2.5 px-4 rounded-lg font-medium transition-all duration-200 hover:bg-indigo-700 flex items-center justify-center"
+                      className="flex-1 bg-indigo-600 text-white py-2.5 px-4 rounded-lg font-medium transition-all duration-200 hover:bg-indigo-700 flex items-center justify-center cursor-pointer"
                     >
                       <ShoppingBag className="w-4 h-4 mr-2" />
                       Shop It
                     </button>
 
                     <button
-                      className="bg-gray-100 hover:bg-gray-200 p-2.5 rounded-lg transition-colors duration-200"
+                      className="bg-gray-100 hover:bg-gray-200 p-2.5 rounded-lg transition-colors duration-200 cursor-pointer"
                     >
                       <ShoppingCart className="w-5 h-5 text-gray-700" />
                     </button>
@@ -195,7 +195,7 @@ const Products = () => {
 
         <div className="text-center">
           <button
-            className="bg-gray-900 hover:bg-black text-white px-8 py-3 rounded-full font-medium transition-all duration-200 inline-flex items-center"
+            className="bg-gray-900 hover:bg-black text-white px-8 py-3 rounded-full font-medium transition-all duration-200 inline-flex items-center cursor-pointer"
           >
             View All Products
             <svg
