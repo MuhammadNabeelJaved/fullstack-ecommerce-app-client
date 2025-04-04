@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const Hero = () => {
   const [productCount, setProductCount] = useState(0);
@@ -7,15 +8,15 @@ const Hero = () => {
 
   useEffect(() => {
     const productInterval = setInterval(() => {
-      setProductCount(prev => prev < 5000 ? prev + 100 : 5000);
+      setProductCount((prev) => (prev < 5000 ? prev + 100 : 5000));
     }, 20);
 
     const satisfactionInterval = setInterval(() => {
-      setSatisfaction(prev => prev < 98 ? prev + 2 : 98);
+      setSatisfaction((prev) => (prev < 98 ? prev + 2 : 98));
     }, 30);
 
     const supportInterval = setInterval(() => {
-      setSupport(prev => prev < 24 ? prev + 1 : 24);
+      setSupport((prev) => (prev < 24 ? prev + 1 : 24));
     }, 50);
 
     return () => {
@@ -51,23 +52,38 @@ const Hero = () => {
             {/* Stats */}
             <div className="flex flex-wrap gap-4 sm:gap-6 pt-4 mt-4 border-t border-gray-200 justify-center md:justify-start">
               <div>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+                <motion.p
+                  className="text-2xl sm:text-3xl font-bold text-gray-900"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
                   {productCount.toLocaleString()}+
-                </p>
+                </motion.p>
                 <p className="text-sm sm:text-base text-gray-600">Products</p>
               </div>
               <div>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+                <motion.p
+                  className="text-2xl sm:text-3xl font-bold text-gray-900"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
                   {satisfaction}%
-                </p>
+                </motion.p>
                 <p className="text-sm sm:text-base text-gray-600">
                   Satisfaction
                 </p>
               </div>
               <div>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+                <motion.p
+                  className="text-2xl sm:text-3xl font-bold text-gray-900"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                >
                   {support}/7
-                </p>
+                </motion.p>
                 <p className="text-sm sm:text-base text-gray-600">Support</p>
               </div>
             </div>

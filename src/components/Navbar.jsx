@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router";
 import { motion } from "framer-motion";
 import { Menu, X, ShoppingCart, Search, User } from "lucide-react";
 
@@ -18,26 +19,30 @@ const Navbar = () => {
     setShowSearch(!showSearch);
   };
 
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <nav className="bg-white shadow-md fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo and Desktop Navigation */}
           <div className="flex items-center">
-            <a href="/" className="flex-shrink-0 flex items-center">
+            <Link to="/" className="flex-shrink-0 flex items-center">
               <span className="text-2xl font-bold text-indigo-600">
-                ShopEase
+                ShopNow
               </span>
-            </a>
+            </Link>
             <div className="hidden md:ml-6 md:flex md:space-x-8">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.name}
-                  href={link.href}
+                  to={link.href}
                   className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-indigo-600 transition-colors duration-200"
                 >
                   {link.name}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -68,21 +73,21 @@ const Navbar = () => {
                   </motion.div>
                 )}
               </div>
-              <button className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200">
+              <Link to="/account" className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200">
                 <User className="h-5 w-5" />
-              </button>
-              <button className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 relative">
+              </Link>
+              <Link to="/cart" className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 relative">
                 <ShoppingCart className="h-5 w-5" />
                 <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   0
                 </span>
-              </button>
+              </Link>
             </div>
 
             {/* Mobile menu button */}
             <div className="md:hidden flex items-center">
               <button
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={toggleMenu}
                 className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200"
               >
                 {isOpen ? (
@@ -109,13 +114,14 @@ const Navbar = () => {
       >
         <div className="px-2 pt-2 pb-3 space-y-1">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
-              href={link.href}
+              to={link.href}
               className="block px-3 py-2 text-base font-medium text-gray-900 hover:text-indigo-600 hover:bg-gray-50 transition-colors duration-200"
+              onClick={() => setIsOpen(false)}
             >
               {link.name}
-            </a>
+            </Link>
           ))}
           <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="flex items-center px-5 space-x-4">
@@ -142,15 +148,15 @@ const Navbar = () => {
                   </motion.div>
                 )}
               </div>
-              <button className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200">
+              <Link to="/account" className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200">
                 <User className="h-5 w-5" />
-              </button>
-              <button className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 relative">
+              </Link>
+              <Link to="/cart" className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 relative">
                 <ShoppingCart className="h-5 w-5" />
                 <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   0
                 </span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>

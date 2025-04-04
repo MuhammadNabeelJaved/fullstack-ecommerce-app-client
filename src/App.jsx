@@ -1,16 +1,16 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Layout from './layout/Layout.jsx'
-function App() {
-  const [count, setCount] = useState(0)
+import React from "react";
+import { Outlet } from "react-router";
+import Navbar from "./components/Navbar";
 
+function App() {
   return (
-    <>
-      <Layout/>
-    </>
-  )
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <main className="pt-16">
+        <Outlet />
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
