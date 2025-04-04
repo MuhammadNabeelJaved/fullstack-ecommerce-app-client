@@ -73,12 +73,6 @@ const Footer = () => {
               <li>
                 <FooterLink to="/faq">FAQ</FooterLink>
               </li>
-              <li>
-                <FooterLink to="/shipping">Shipping Policy</FooterLink>
-              </li>
-              <li>
-                <FooterLink to="/returns">Returns & Refunds</FooterLink>
-              </li>
             </ul>
           </div>
 

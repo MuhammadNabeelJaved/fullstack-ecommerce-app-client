@@ -12,6 +12,9 @@ import Reviews from "./components/Reviews.jsx";
 import Cart from "./components/Cart.jsx";
 import Checkout from "./components/Checkout.jsx";
 import Faqs from "./components/Faqs.jsx";
+import Policy from "./components/Policy.jsx";
+import TermsOfService from "./components/TermsOfService.jsx";
+import CookiePolicy from "./components/CookiePolicy.jsx";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +52,18 @@ const router = createBrowserRouter([
       {
         path: "/faq",
         element: <Faqs />,
+      },
+      {
+        path: "/privacy",
+        element: <Policy />,
+      },
+      {
+        path: "/terms",
+        element: <TermsOfService />,
+      },
+      {
+        path: "/cookies",
+        element: <CookiePolicy />,
       },
     ],
   },

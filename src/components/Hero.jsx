@@ -41,10 +41,10 @@ const Hero = () => {
               elevate your lifestyle with elegance and innovation.
             </p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 pt-6 justify-center md:justify-start">
-              <button className="bg-gray-900 hover:bg-black text-white px-10 py-4 rounded-full font-medium transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full sm:w-auto text-lg">
+              <button className="bg-gray-900 cursor-pointer hover:bg-black text-white px-10 py-4 rounded-full font-medium transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full sm:w-auto text-lg">
                 Shop Now
               </button>
-              <button className="bg-white hover:bg-gray-100 text-gray-900 border border-gray-300 px-10 py-4 rounded-full font-medium transition-all duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 w-full sm:w-auto text-lg">
+              <button className="bg-white cursor-pointer hover:bg-gray-100 text-gray-900 border border-gray-300 px-10 py-4 rounded-full font-medium transition-all duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 w-full sm:w-auto text-lg">
                 View Catalog
               </button>
             </div>

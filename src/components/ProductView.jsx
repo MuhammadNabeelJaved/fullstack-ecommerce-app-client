@@ -151,7 +151,7 @@ const ProductView = () => {
                 <button
                   key={color.value}
                   onClick={() => setSelectedColor(color.value)}
-                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center cursor-pointer ${
                     selectedColor === color.value
                       ? "ring-2 ring-indigo-600 ring-offset-2"
                       : ""
@@ -171,7 +171,7 @@ const ProductView = () => {
               <div className="flex items-center border border-gray-300 rounded-lg w-fit">
                 <button
                   onClick={decreaseQuantity}
-                  className="p-1.5 sm:p-2 hover:bg-gray-50"
+                  className="p-1.5 sm:p-2 cursor-pointer hover:bg-gray-50"
                 >
                   <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
                 </button>
@@ -180,7 +180,7 @@ const ProductView = () => {
                 </span>
                 <button
                   onClick={increaseQuantity}
-                  className="p-1.5 sm:p-2 hover:bg-gray-50"
+                  className="p-1.5 sm:p-2 cursor-pointer hover:bg-gray-50"
                 >
                   <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
                 </button>
@@ -191,10 +191,10 @@ const ProductView = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <button className="w-full bg-gray-900 text-white py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg font-medium hover:bg-black transition-colors duration-200">
+              <button className="w-full cursor-pointer bg-gray-900 text-white py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg font-medium hover:bg-black transition-colors duration-200">
                 Buy Now
               </button>
-              <button className="w-full border border-gray-300 text-gray-900 py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200">
+              <button className="w-full cursor-pointer border border-gray-300 text-gray-900 py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200">
                 Add to Cart
               </button>
             </div>
