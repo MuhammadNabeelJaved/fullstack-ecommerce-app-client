@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { selectCartItems } from "../redux/features/cartSlice.js";
-import { Menu, X, ShoppingCart, Search, User } from "lucide-react";
+import { Menu, X, ShoppingCart, Search, User, LogIn } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -76,12 +76,33 @@ const Navbar = () => {
                   </motion.div>
                 )}
               </div>
-              <Link
-                to="/account"
-                className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200"
-              >
-                <User className="h-5 w-5" />
-              </Link>
+              <div className="relative group">
+                <button className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 flex items-center">
+                  <User className="h-5 w-5" />
+                </button>
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg overflow-hidden z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 origin-top-right transform scale-95 group-hover:scale-100">
+                  <div className="py-2">
+                    <Link
+                      to="/signin"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                    >
+                      Sign Up
+                    </Link>
+                    <Link
+                      to="/account"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                    >
+                      My Account
+                    </Link>
+                  </div>
+                </div>
+              </div>
               <Link
                 to="/cart"
                 className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 relative"
@@ -158,10 +179,11 @@ const Navbar = () => {
                 )}
               </div>
               <Link
-                to="/account"
-                className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200"
+                to="/signin"
+                className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 flex items-center"
               >
-                <User className="h-5 w-5" />
+                <LogIn className="h-5 w-5 mr-1" />
+                <span className="text-sm">Sign In</span>
               </Link>
               <Link
                 to="/cart"
