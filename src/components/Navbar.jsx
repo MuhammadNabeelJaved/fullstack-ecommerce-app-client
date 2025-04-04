@@ -3,7 +3,13 @@ import { Link } from "react-router";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { selectCartItems } from "../redux/features/cartSlice.js";
-import { setSearchQuery, toggleSearch, closeSearch, selectIsSearchOpen, selectSearchQuery } from "../redux/features/searchSlice.js";
+import {
+  setSearchQuery,
+  toggleSearch,
+  closeSearch,
+  selectIsSearchOpen,
+  selectSearchQuery,
+} from "../redux/features/searchSlice.js";
 import { Menu, X, ShoppingCart, Search, User, LogIn } from "lucide-react";
 import SearchResults from "./SearchResults.jsx";
 
@@ -38,20 +44,23 @@ const Navbar = () => {
   };
 
   const handleClickOutside = (event) => {
-    if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
-      dispatch(closeSearch());
+    if (
+      searchContainerRef.current &&
+      !searchContainerRef.current.contains(event.target)
+    ) {
+      // dispatch(closeSearch());
     }
   };
 
   useEffect(() => {
     if (isSearchOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     }
-    
+
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isSearchOpen]);
 
@@ -86,7 +95,10 @@ const Navbar = () => {
           {/* Right side icons */}
           <div className="flex items-center">
             <div className="hidden md:flex items-center space-x-4">
-              <div className="relative flex items-center" ref={searchContainerRef}>
+              <div
+                className="relative flex items-center"
+                ref={searchContainerRef}
+              >
                 <button
                   className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200"
                   onClick={handleToggleSearch}
@@ -111,7 +123,9 @@ const Navbar = () => {
                     />
                   </motion.div>
                 )}
-                <SearchResults isVisible={isSearchOpen && searchQuery.trim().length > 0} />
+                <SearchResults
+                  isVisible={isSearchOpen && searchQuery.trim().length > 0}
+                />
               </div>
               <div className="relative group">
                 <button className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 flex items-center">
@@ -216,7 +230,9 @@ const Navbar = () => {
                     />
                   </motion.div>
                 )}
-                <SearchResults isVisible={isSearchOpen && searchQuery.trim().length > 0} />
+                <SearchResults
+                  isVisible={isSearchOpen && searchQuery.trim().length > 0}
+                />
               </div>
               <Link
                 to="/signin"

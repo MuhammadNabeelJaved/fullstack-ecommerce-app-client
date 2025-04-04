@@ -11,12 +11,42 @@ const Products = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [filteredProducts, setFilteredProducts] = useState(products);
 
   useEffect(() => {
     if (isInView) {
       controls.start("visible");
     }
   }, [isInView, controls]);
+
+  // Apply category filtering whenever selectedCategory changes
+  useEffect(() => {
+    if (selectedCategory === "all") {
+      setFilteredProducts(products);
+    } else {
+      // Map category values to keywords to look for in product names/descriptions
+      const categoryKeywords = {
+        "headphones": ["headphone", "earphone", "earbud"],
+        "speakers": ["speaker", "sound system", "audio system"],
+        "wearables": ["watch", "fitness tracker", "smart watch"],
+        "accessories": ["mouse", "keyboard", "power bank", "camera"]
+      };
+      
+      const keywords = categoryKeywords[selectedCategory] || [selectedCategory];
+      
+      const filtered = products.filter(product => {
+        const name = product.name.toLowerCase();
+        const description = product.description?.toLowerCase() || "";
+        
+        // Check if any of the keywords match in name or description
+        return keywords.some(keyword => 
+          name.includes(keyword) || description.includes(keyword)
+        );
+      });
+      
+      setFilteredProducts(filtered);
+    }
+  }, [selectedCategory]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -64,9 +94,16 @@ const Products = () => {
     { name: "Accessories", value: "accessories" },
   ];
   
-  const filteredProducts = selectedCategory === "all" 
-    ? products 
-    : products.filter(product => product.name.toLowerCase().includes(selectedCategory));
+  const handleCategoryChange = (category) => {
+    // Reset the animation controls when changing category
+    controls.start("hidden").then(() => {
+      setSelectedCategory(category);
+      // Give a slight delay before showing the new products
+      setTimeout(() => {
+        controls.start("visible");
+      }, 100);
+    });
+  };
 
   return (
     <section className="py-16 bg-gradient-to-b from-gray-50/50 to-white">
@@ -94,7 +131,7 @@ const Products = () => {
           {categories.map(category => (
             <motion.button
               key={category.value}
-              onClick={() => setSelectedCategory(category.value)}
+              onClick={() => handleCategoryChange(category.value)}
               className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                 selectedCategory === category.value
                   ? "bg-indigo-600 text-white shadow-md"
@@ -122,11 +159,21 @@ const Products = () => {
               </motion.div>
             ))
           ) : (
-            <div className="col-span-full py-12 text-center">
+            <motion.div 
+              variants={itemVariants}
+              className="col-span-full py-12 text-center">
               <ShoppingBag className="mx-auto h-12 w-12 text-gray-400 mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-              <p className="text-gray-500">Try selecting a different category or check back later.</p>
-            </div>
+              <p className="text-gray-500 mb-4">Try selecting a different category or check back later.</p>
+              <motion.button
+                onClick={() => handleCategoryChange('all')}
+                className="px-6 py-2.5 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                View All Products
+              </motion.button>
+            </motion.div>
           )}
         </motion.div>
         
