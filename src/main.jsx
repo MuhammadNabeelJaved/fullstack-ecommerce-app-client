@@ -25,6 +25,17 @@ import ProductView from "./components/ProductView.jsx";
 import SignIn from "./components/SignIn.jsx";
 import SignUp from "./components/SignUp.jsx";
 
+// CMS Components
+import CMSLayout from './components/cms/CMSLayout';
+import ProductForm from './components/cms/ProductForm';
+
+// Client Routes (currently using placeholders)
+const HomePage = () => <div className="container mx-auto px-4 py-8">Home Page</div>;
+const ProductsPage = () => <div className="container mx-auto px-4 py-8">Products Page</div>;
+const ProductPage = () => <div className="container mx-auto px-4 py-8">Product Details Page</div>;
+const CartPage = () => <div className="container mx-auto px-4 py-8">Cart Page</div>;
+const CheckoutPage = () => <div className="container mx-auto px-4 py-8">Checkout Page</div>;
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -120,8 +131,58 @@ const router = createBrowserRouter([
         path: "/signup",
         element: <SignUp />,
       },
-    ],
+    ]
   },
+  {
+    path: "/cms",
+    element: <CMSLayout />,
+    children: [
+      {
+        index: true,
+        element: <Dashboard />
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />
+      },
+      {
+        path: "products",
+        element: <Products />
+      },
+      {
+        path: "products/new",
+        element: <ProductForm />
+      },
+      {
+        path: "products/edit/:id",
+        element: <ProductForm />
+      },
+      {
+        path: "orders",
+        element: <Orders />
+      },
+      {
+        path: "orders/:id",
+        element: <div>Order Details (To be implemented)</div>
+      },
+      {
+        path: "customers",
+        element: <div>Customers (To be implemented)</div>
+      },
+      {
+        path: "analytics",
+        element: <div>Analytics (To be implemented)</div>
+      },
+      {
+        path: "support",
+        element: <div>Support (To be implemented)</div>
+      },
+      {
+        path: "settings",
+        element: <div>Settings (To be implemented)</div>
+      }
+    ]
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
