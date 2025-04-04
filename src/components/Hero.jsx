@@ -3,6 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { motion } from "framer-motion";
+import products from "../data/products.data.js";
 
 const Hero = () => {
   const settings = {
@@ -54,13 +55,13 @@ const Hero = () => {
   return (
     <div className="relative w-full">
       <Slider {...settings} className="hero-slider">
-        {slides.map((slide) => (
+        {products.map((slide) => (
           <div key={slide.id} className="relative w-full h-[60vh] md:h-[80vh] lg:h-[90vh]">
             {/* Background Image */}
             <div className="absolute inset-0">
               <img
                 src={slide.image}
-                alt={slide.title}
+                alt={slide.name}
                 className="w-full h-full object-cover"
               />
               {/* Gradient Overlay */}
@@ -80,7 +81,7 @@ const Hero = () => {
                     {slide.tag}
                   </span>
                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                    {slide.title}
+                    {slide.name}
                   </h1>
                   <p className="text-xl sm:text-2xl md:text-3xl text-indigo-300 font-light">
                     {slide.offer}

@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
+import { selectCartItems } from "../redux/features/cartSlice.js";
 import { Menu, X, ShoppingCart, Search, User } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const cartItems = useSelector(selectCartItems);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -73,13 +76,19 @@ const Navbar = () => {
                   </motion.div>
                 )}
               </div>
-              <Link to="/account" className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200">
+              <Link
+                to="/account"
+                className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200"
+              >
                 <User className="h-5 w-5" />
               </Link>
-              <Link to="/cart" className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 relative">
+              <Link
+                to="/cart"
+                className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 relative"
+              >
                 <ShoppingCart className="h-5 w-5" />
                 <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  0
+                  {cartItems.length}
                 </span>
               </Link>
             </div>
@@ -148,13 +157,19 @@ const Navbar = () => {
                   </motion.div>
                 )}
               </div>
-              <Link to="/account" className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200">
+              <Link
+                to="/account"
+                className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200"
+              >
                 <User className="h-5 w-5" />
               </Link>
-              <Link to="/cart" className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 relative">
+              <Link
+                to="/cart"
+                className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 relative"
+              >
                 <ShoppingCart className="h-5 w-5" />
                 <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  0
+                  {cartItems.length}
                 </span>
               </Link>
             </div>

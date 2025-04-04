@@ -2,7 +2,7 @@ const products = [
     {
         id: 1,
         name: "Premium Headphones",
-        price: "$299",
+        price: 299,
         rating: 4.8,
         reviews: 124,
         description:
@@ -14,12 +14,15 @@ const products = [
             "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8aGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D",
             "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGhlYWRwaG9uZXN8ZW58MHx8MHx8fDA%3D",
             "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGhlYWRwaG9uZXN8ZW58MHx8MHx8fDA%3D"
-        ]
+        ],
+        offer: "20% off for a limited time",
+        bgColor: "from-black/80 to-transparent",
+        tag: "Special Discount",
     },
     {
         id: 2,
         name: "Smart Watch",
-        price: "$199",
+        price: 199,
         rating: 4.6,
         reviews: 89,
         description:
@@ -31,12 +34,15 @@ const products = [
             "https://images.unsplash.com/photo-1617043786394-f977fa12eddf?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHNtYXJ0JTIwd2F0Y2h8ZW58MHx8MHx8fDA%3D",
             "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHNtYXJ0JTIwd2F0Y2h8ZW58MHx8MHx8fDA%3D",
             "https://images.unsplash.com/photo-1544117519-cc0d19974c1e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHNtYXJ0JTIwd2F0Y2h8ZW58MHx8MHx8fDA%3D"
-        ]
+        ],
+        offer: "Free fitness tracking app with purchase",
+        bgColor: "from-black/80 to-transparent",
+        tag: "New Arrival",
     },
     {
         id: 3,
         name: "Wireless Speaker",
-        price: "$149",
+        price: 149,
         rating: 4.5,
         reviews: 76,
         description:
@@ -49,12 +55,15 @@ const products = [
             "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8c3BlYWtlcnxlbnwwfHwwfHx8MA%3D%3D",
             "https://images.unsplash.com/photo-1610465299993-e6675c9f9efa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNwZWFrZXJ8ZW58MHx8MHx8fDA%3D",
             "https://images.unsplash.com/photo-1558537348-c0f8e733989d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHNwZWFrZXJ8ZW58MHx8MHx8fDA%3D"
-        ]
+        ],
+        offer: "Buy one get 25% off a second speaker",
+        bgColor: "from-black/80 to-transparent",
+        tag: "Limited Time",
     },
     {
         id: 4,
         name: "Gaming Mouse",
-        price: "$79",
+        price: 79,
         rating: 4.7,
         reviews: 112,
         description:
@@ -66,7 +75,10 @@ const products = [
             "https://images.unsplash.com/photo-1605773527852-c546a8584ea3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z2FtaW5nJTIwbW91c2V8ZW58MHx8MHx8fDA%3D",
             "https://images.unsplash.com/photo-1563297007-0686b7003af7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Z2FtaW5nJTIwbW91c2V8ZW58MHx8MHx8fDA%3D",
             "https://images.unsplash.com/photo-1586349906319-48d20e9d17e5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGdhbWluZyUyMG1vdXNlfGVufDB8fDB8fHww"
-        ]
+        ],
+        offer: "Free gaming mousepad with purchase",
+        bgColor: "from-black/80 to-transparent",
+        tag: "Best Seller",
     },
 ];
 

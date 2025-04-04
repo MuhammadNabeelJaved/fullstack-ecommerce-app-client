@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router";
-import { Star, Minus, Plus, Truck, RotateCcw } from "lucide-react";
+import { Star, Minus, Plus, Truck, RotateCcw, ShoppingCart, Check } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, selectCartItems } from "../redux/features/cartSlice";
 import products from "../data/products.data.js";
 
 const ProductView = () => {
@@ -9,8 +11,11 @@ const ProductView = () => {
   const [quantity, setQuantity] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const cartItems = useSelector(selectCartItems);
   const product = products.find((product) => product.id === parseInt(id));
   const [selectedImage, setSelectedImage] = useState("");
+  const isInCart = cartItems.some(item => item.id === parseInt(id));
 
   console.log("Single product is:", product);
 
@@ -94,6 +99,14 @@ const ProductView = () => {
     setSelectedImage(img);
   };
 
+  const handleAddToCart = () => {
+    dispatch(addToCart({
+      ...product,
+      color: selectedColor,
+      quantity: quantity
+    }));
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-16">
@@ -148,10 +161,10 @@ const ProductView = () => {
 
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-2xl sm:text-3xl font-bold text-gray-900">
-                {product.price}
+                ${product.price.toFixed(2)}
               </span>
               <span className="text-sm sm:text-lg text-gray-500">
-                or 99.99/month
+                or ${(product.price / 6).toFixed(2)}/month
               </span>
             </div>
 
@@ -213,8 +226,25 @@ const ProductView = () => {
               <button className="w-full cursor-pointer bg-gray-900 text-white py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg font-medium hover:bg-black transition-colors duration-200">
                 Buy Now
               </button>
-              <button className="w-full cursor-pointer border border-gray-300 text-gray-900 py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200">
-                Add to Cart
+              <button 
+                onClick={handleAddToCart}
+                className={`w-full cursor-pointer py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 ${
+                  isInCart 
+                    ? "bg-green-500 text-white hover:bg-green-600" 
+                    : "border border-gray-300 text-gray-900 hover:bg-gray-50"
+                }`}
+              >
+                {isInCart ? (
+                  <>
+                    <Check className="h-5 w-5" />
+                    <span>Added to Cart</span>
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="h-5 w-5" />
+                    <span>Add to Cart</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

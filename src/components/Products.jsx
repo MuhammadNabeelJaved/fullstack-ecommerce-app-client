@@ -1,19 +1,33 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, useAnimation, useInView } from "framer-motion";
-import { ShoppingCart, Star, ShoppingBag, Eye } from "lucide-react";
+import { ShoppingCart, Star, ShoppingBag, Eye, Check } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router";
+import { addToCart, selectCartItems } from "../redux/features/cartSlice.js";
 import products from "../data/products.data.js";
 
 const Products = () => {
   const controls = useAnimation();
   const ref = useRef(null);
+  const dispatch = useDispatch();
+  const cartItems = useSelector(selectCartItems);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const [addedItems, setAddedItems] = useState({});
 
   useEffect(() => {
     if (isInView) {
       controls.start("visible");
     }
   }, [isInView, controls]);
+
+  useEffect(() => {
+    // Initialize addedItems state based on what's already in cart
+    const initialAddedState = {};
+    cartItems.forEach(item => {
+      initialAddedState[item.id] = true;
+    });
+    setAddedItems(initialAddedState);
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -40,7 +54,6 @@ const Products = () => {
     },
   };
 
-
   const renderRatingStars = (rating) => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -65,6 +78,27 @@ const Products = () => {
       }
     }
     return stars;
+  };
+
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product));
+    setAddedItems(prev => ({
+      ...prev,
+      [product.id]: true
+    }));
+    
+    // Show a brief animation or feedback
+    setTimeout(() => {
+      // Optional: You could reset this after some time if you want
+      // setAddedItems(prev => ({
+      //   ...prev,
+      //   [product.id]: false
+      // }));
+    }, 2000);
+  };
+
+  const isProductInCart = (productId) => {
+    return addedItems[productId] || cartItems.some(item => item.id === productId);
   };
 
   return (
@@ -130,9 +164,25 @@ const Products = () => {
                   </div>
 
                   <div className="flex justify-between gap-3">
-                    <button className="flex-1 bg-indigo-600 text-white py-2.5 px-4 rounded-lg font-medium transition-all duration-200 hover:bg-indigo-700 flex items-center justify-center cursor-pointer">
-                      <ShoppingBag className="w-4 h-4 mr-2" />
-                      Shop It
+                    <button 
+                      onClick={() => handleAddToCart(product)}
+                      className={`flex-1 py-2.5 px-4 rounded-lg font-medium transition-all duration-200 flex items-center justify-center cursor-pointer ${
+                        isProductInCart(product.id) 
+                          ? 'bg-green-600 hover:bg-green-700 text-white' 
+                          : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                      }`}
+                    >
+                      {isProductInCart(product.id) ? (
+                        <>
+                          <Check className="w-4 h-4 mr-2" />
+                          Added to Cart
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingBag className="w-4 h-4 mr-2" />
+                          Add to Cart
+                        </>
+                      )}
                     </button>
 
                     <NavLink
@@ -143,9 +193,12 @@ const Products = () => {
                       <Eye className="w-5 h-5 text-gray-700" />
                     </NavLink>
 
-                    <button className="bg-gray-100 hover:bg-gray-200 p-2.5 rounded-lg transition-colors duration-200 cursor-pointer">
+                    <NavLink
+                      to="/cart"
+                      className="bg-gray-100 hover:bg-gray-200 p-2.5 rounded-lg transition-colors duration-200 cursor-pointer"
+                    >
                       <ShoppingCart className="w-5 h-5 text-gray-700" />
-                    </button>
+                    </NavLink>
                   </div>
                 </div>
               </div>
