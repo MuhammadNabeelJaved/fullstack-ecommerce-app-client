@@ -1,11 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useParams } from "react-router";
 import { Star, Minus, Plus, Truck, RotateCcw } from "lucide-react";
+import products from "../data/products.data.js";
 
 const ProductView = () => {
   const [selectedColor, setSelectedColor] = useState("red");
   const [quantity, setQuantity] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+  const { id } = useParams();
+  const product = products.find((product) => product.id === parseInt(id));
+  const [selectedImage, setSelectedImage] = useState("");
+
+  console.log("Single product is:", product);
+
+  if (!product) {
+    return <div>Product not found</div>;
+  }
+
+  // Set default image when product changes
+  useEffect(() => {
+    if (product) {
+      setSelectedImage(product.image);
+    }
+  }, [product]);
 
   // Check if the screen is mobile
   useEffect(() => {
@@ -72,35 +90,37 @@ const ProductView = () => {
     ));
   };
 
+  const handleImageClick = (img) => {
+    setSelectedImage(img);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-16">
         {/* Left Column - Product Images */}
         <div className="space-y-3 sm:space-y-4">
-          <div className="aspect-w-1 aspect-h-1 bg-gray-100 rounded-xl sm:rounded-2xl overflow-hidden">
+          <div className="aspect-w-1 aspect-h-1 overflow-hidden h-80 bg-gray-100 rounded-xl sm:rounded-2xl">
             <motion.img
-              src="https://images.unsplash.com/photo-1605464315542-bda3e2f4e605?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YWlycG9kcyUyMG1heHxlbnwwfHwwfHx8MA%3D%3D"
-              alt="Airpods Max"
-              className="w-full h-full object-cover"
+              src={selectedImage}
+              alt={product.name}
+              className="w-full h-full object-contain"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             />
           </div>
           <div className="grid grid-cols-4 gap-2 sm:gap-4">
-            {[
-              "https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YWlycG9kcyUyMG1heHxlbnwwfHwwfHx8MA%3D%3D",
-              "https://images.unsplash.com/photo-1610438235354-a6ae5528385c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YWlycG9kcyUyMG1heHxlbnwwfHwwfHx8MA%3D%3D",
-              "https://images.unsplash.com/photo-1649859394614-dc4f7290b7f2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGFpcnBvZHMlMjBtYXh8ZW58MHx8MHx8fDA%3D",
-              "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGhlYWRwaG9uZXN8ZW58MHx8MHx8fDA%3D",
-            ].map((img, index) => (
+            {product?.images?.map((img, index) => (
               <div
                 key={index}
                 className="aspect-w-1 aspect-h-1 bg-gray-100 rounded-md sm:rounded-lg overflow-hidden"
+                onClick={() => handleImageClick(img)}
               >
                 <img
                   src={img}
                   alt={`Product view ${index + 1}`}
-                  className="w-full h-full object-cover cursor-pointer hover:opacity-75 transition-opacity"
+                  className={`w-full h-full object-cover cursor-pointer hover:opacity-75 transition-opacity ${
+                    selectedImage === img ? "ring-2 ring-indigo-600" : ""
+                  }`}
                 />
               </div>
             ))}
@@ -111,25 +131,24 @@ const ProductView = () => {
         <div className="space-y-4 sm:space-y-6 mt-4 md:mt-0">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Airpods Max
+              {product.name}
             </h1>
             <div className="mt-2 flex items-center space-x-2">
               <div className="flex items-center">{renderStars(5)}</div>
               <span className="text-xs sm:text-sm text-gray-500">
-                (121 reviews)
+                ({product.reviews} reviews)
               </span>
             </div>
           </div>
 
           <div className="space-y-2 sm:space-y-4">
             <p className="text-sm sm:text-base text-gray-600">
-              A perfect balance of exhilarating high-fidelity audio and the
-              effortless magic of AirPods.
+              {product.description}
             </p>
 
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-2xl sm:text-3xl font-bold text-gray-900">
-                $549.00
+                {product.price}
               </span>
               <span className="text-sm sm:text-lg text-gray-500">
                 or 99.99/month

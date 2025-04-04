@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { motion, useAnimation, useInView } from "framer-motion";
-import { ShoppingCart, Star, ShoppingBag } from "lucide-react";
+import { ShoppingCart, Star, ShoppingBag, Eye } from "lucide-react";
+import { NavLink } from "react-router";
+import products from "../data/products.data.js";
 
 const Products = () => {
   const controls = useAnimation();
@@ -38,52 +40,6 @@ const Products = () => {
     },
   };
 
-  const products = [
-    {
-      id: 1,
-      name: "Premium Headphones",
-      price: "$299",
-      rating: 4.8,
-      reviews: 124,
-      description:
-        "Experience crystal-clear sound with our premium noise-cancelling headphones. Perfect for music lovers and professionals alike, featuring 40-hour battery life and ultra-comfortable ear cushions.",
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D",
-    },
-    {
-      id: 2,
-      name: "Smart Watch",
-      price: "$199",
-      rating: 4.6,
-      reviews: 89,
-      description:
-        "Track your fitness goals, receive notifications, and monitor your health with our advanced smartwatch. Water-resistant design with a vibrant OLED display and 7-day battery life.",
-      image:
-        "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c21hcnQlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D",
-    },
-    {
-      id: 3,
-      name: "Wireless Speaker",
-      price: "$149",
-      rating: 4.5,
-      reviews: 76,
-      description:
-        "Fill any room with immersive 360° sound. This portable Bluetooth speaker delivers rich bass and clear highs with 20 hours of playback. Waterproof design makes it perfect for outdoor adventures.",
-      image:
-        "https://images.unsplash.com/photo-1589003077984-894e133dabab?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c3BlYWtlcnxlbnwwfHwwfHx8MA%3D%3D",
-    },
-    {
-      id: 4,
-      name: "Gaming Mouse",
-      price: "$79",
-      rating: 4.7,
-      reviews: 112,
-      description:
-        "Dominate your games with precision and speed. This ergonomic gaming mouse features customizable RGB lighting, 16,000 DPI optical sensor, and 8 programmable buttons for the ultimate gaming experience.",
-      image:
-        "https://images.unsplash.com/photo-1527814050087-3793815479db?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Z2FtaW5nJTIwbW91c2V8ZW58MHx8MHx8fDA%3D",
-    },
-  ];
 
   const renderRatingStars = (rating) => {
     const stars = [];
@@ -174,16 +130,20 @@ const Products = () => {
                   </div>
 
                   <div className="flex justify-between gap-3">
-                    <button
-                      className="flex-1 bg-indigo-600 text-white py-2.5 px-4 rounded-lg font-medium transition-all duration-200 hover:bg-indigo-700 flex items-center justify-center cursor-pointer"
-                    >
+                    <button className="flex-1 bg-indigo-600 text-white py-2.5 px-4 rounded-lg font-medium transition-all duration-200 hover:bg-indigo-700 flex items-center justify-center cursor-pointer">
                       <ShoppingBag className="w-4 h-4 mr-2" />
                       Shop It
                     </button>
 
-                    <button
+                    <NavLink
+                      to={`/product/view/${product.id}`}
+                      target="_blank"
                       className="bg-gray-100 hover:bg-gray-200 p-2.5 rounded-lg transition-colors duration-200 cursor-pointer"
                     >
+                      <Eye className="w-5 h-5 text-gray-700" />
+                    </NavLink>
+
+                    <button className="bg-gray-100 hover:bg-gray-200 p-2.5 rounded-lg transition-colors duration-200 cursor-pointer">
                       <ShoppingCart className="w-5 h-5 text-gray-700" />
                     </button>
                   </div>
@@ -194,9 +154,7 @@ const Products = () => {
         </motion.div>
 
         <div className="text-center">
-          <button
-            className="bg-gray-900 hover:bg-black text-white px-8 py-3 rounded-full font-medium transition-all duration-200 inline-flex items-center cursor-pointer"
-          >
+          <button className="bg-gray-900 hover:bg-black text-white px-8 py-3 rounded-full font-medium transition-all duration-200 inline-flex items-center cursor-pointer">
             View All Products
             <svg
               className="ml-2 w-5 h-5"
