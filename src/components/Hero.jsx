@@ -1,120 +1,154 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { motion } from "framer-motion";
 
 const Hero = () => {
-  const [productCount, setProductCount] = useState(0);
-  const [satisfaction, setSatisfaction] = useState(0);
-  const [support, setSupport] = useState(0);
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    fade: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          arrows: false
+        }
+      }
+    ]
+  };
 
-  useEffect(() => {
-    const productInterval = setInterval(() => {
-      setProductCount((prev) => (prev < 5000 ? prev + 100 : 5000));
-    }, 20);
-
-    const satisfactionInterval = setInterval(() => {
-      setSatisfaction((prev) => (prev < 98 ? prev + 2 : 98));
-    }, 30);
-
-    const supportInterval = setInterval(() => {
-      setSupport((prev) => (prev < 24 ? prev + 1 : 24));
-    }, 50);
-
-    return () => {
-      clearInterval(productInterval);
-      clearInterval(satisfactionInterval);
-      clearInterval(supportInterval);
-    };
-  }, []);
+  const slides = [
+    {
+      id: 1,
+      image: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&q=80&w=2000&h=800",
+      tag: "Special Discount",
+      title: "Premium Sound System",
+      offer: "offer 20% off",
+      bgColor: "from-black/80 to-transparent",
+    },
+    {
+      id: 2,
+      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=2000&h=800",
+      tag: "New Arrival",
+      title: "Wireless Headphones",
+      offer: "Save up to 30%",
+      bgColor: "from-black/80 to-transparent",
+    },
+    {
+      id: 3,
+      image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&q=80&w=2000&h=800",
+      tag: "Limited Time",
+      title: "Smart Speakers",
+      offer: "Get 25% off",
+      bgColor: "from-black/80 to-transparent",
+    },
+  ];
 
   return (
-    <div className="relative bg-gradient-to-r from-gray-100 to-white overflow-hidden min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-          {/* Left Content - Text */}
-          <div className="space-y-8 z-10 order-2 md:order-1 text-center md:text-left">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-gray-900 leading-tight">
-              Discover Our <span className="text-indigo-600">Premium</span>{" "}
-              Collection
-            </h1>
-            <p className="text-xl text-gray-600 max-w-lg mx-auto md:mx-0">
-              Explore our curated selection of high-quality products designed to
-              elevate your lifestyle with elegance and innovation.
-            </p>
-            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 pt-6 justify-center md:justify-start">
-              <button className="bg-gray-900 cursor-pointer hover:bg-black text-white px-10 py-4 rounded-full font-medium transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full sm:w-auto text-lg">
-                Shop Now
-              </button>
-              <button className="bg-white cursor-pointer hover:bg-gray-100 text-gray-900 border border-gray-300 px-10 py-4 rounded-full font-medium transition-all duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 w-full sm:w-auto text-lg">
-                View Catalog
-              </button>
+    <div className="relative w-full">
+      <Slider {...settings} className="hero-slider">
+        {slides.map((slide) => (
+          <div key={slide.id} className="relative w-full h-[60vh] md:h-[80vh] lg:h-[90vh]">
+            {/* Background Image */}
+            <div className="absolute inset-0">
+              <img
+                src={slide.image}
+                alt={slide.title}
+                className="w-full h-full object-cover"
+              />
+              {/* Gradient Overlay */}
+              <div className={`absolute inset-0 bg-gradient-to-r ${slide.bgColor}`} />
             </div>
 
-            {/* Stats */}
-            <div className="flex flex-wrap gap-4 sm:gap-6 pt-4 mt-4 border-t border-gray-200 justify-center md:justify-start">
-              <div>
-                <motion.p
-                  className="text-2xl sm:text-3xl font-bold text-gray-900"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
+            {/* Content */}
+            <div className="relative h-full z-10">
+              <div className="container mx-auto h-full flex items-center">
+                <motion.div
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5 }}
+                  className="max-w-xl text-white space-y-4 sm:space-y-6 lg:space-y-8 pl-[80px] md:pl-[100px] lg:pl-[120px]"
                 >
-                  {productCount.toLocaleString()}+
-                </motion.p>
-                <p className="text-sm sm:text-base text-gray-600">Products</p>
-              </div>
-              <div>
-                <motion.p
-                  className="text-2xl sm:text-3xl font-bold text-gray-900"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                >
-                  {satisfaction}%
-                </motion.p>
-                <p className="text-sm sm:text-base text-gray-600">
-                  Satisfaction
-                </p>
-              </div>
-              <div>
-                <motion.p
-                  className="text-2xl sm:text-3xl font-bold text-gray-900"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                >
-                  {support}/7
-                </motion.p>
-                <p className="text-sm sm:text-base text-gray-600">Support</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Content - Product Display */}
-          <div className="relative h-[500px] md:h-[600px] flex items-center justify-center order-1 md:order-2 mb-8 md:mb-0">
-            <div className="absolute w-full h-full bg-gradient-to-r from-gray-200 to-white rounded-[3rem] transform rotate-3 shadow-2xl"></div>
-            <div className="absolute w-full h-full bg-white rounded-[3rem] transform -rotate-3 shadow-2xl"></div>
-            <div className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-[2.5rem] z-10">
-              {/* Product Image Container */}
-              <div className="w-72 h-72 md:w-96 md:h-96 bg-gradient-to-br from-gray-900 to-gray-700 rounded-full shadow-2xl animate-float flex items-center justify-center">
-                <div className="w-56 h-56 md:w-72 md:h-72 bg-white rounded-full shadow-inner flex items-center justify-center">
-                  <span className="text-2xl font-bold text-gray-800">
-                    3D Product
+                  <span className="inline-block bg-indigo-600 px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-sm font-medium shadow-lg transform hover:scale-105 transition-transform">
+                    {slide.tag}
                   </span>
-                </div>
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                    {slide.title}
+                  </h1>
+                  <p className="text-xl sm:text-2xl md:text-3xl text-indigo-300 font-light">
+                    {slide.offer}
+                  </p>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-sm sm:text-base font-medium transition-all duration-300 shadow-xl hover:shadow-2xl"
+                  >
+                    Shop Now
+                  </motion.button>
+                </motion.div>
               </div>
-
-              {/* Decorative Elements */}
-              <div className="absolute top-1/4 left-1/4 w-12 h-12 bg-indigo-600 rounded-full opacity-70 animate-pulse"></div>
-              <div className="absolute bottom-1/3 right-1/4 w-16 h-16 bg-gray-800 rounded-full opacity-60 animate-bounce"></div>
-              <div className="absolute top-1/2 right-1/3 w-8 h-8 bg-gray-400 rounded-full opacity-80 animate-ping"></div>
             </div>
           </div>
-        </div>
-      </div>
+        ))}
+      </Slider>
 
-      {/* Decorative Background Elements */}
-      <div className="hidden sm:block absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-gray-200 rounded-full opacity-50"></div>
-      <div className="hidden sm:block absolute bottom-0 left-0 -mb-20 -ml-20 w-72 h-72 bg-indigo-100 rounded-full opacity-30"></div>
+      {/* Custom styles for slider dots */}
+      <style jsx>{`
+        .hero-slider .slick-dots {
+          bottom: 25px;
+          z-index: 20;
+        }
+        .hero-slider .slick-dots li {
+          margin: 0 6px;
+        }
+        .hero-slider .slick-dots li button:before {
+          color: white;
+          font-size: 10px;
+          opacity: 0.5;
+          transition: all 0.3s ease;
+        }
+        .hero-slider .slick-dots li.slick-active button:before {
+          color: white;
+          opacity: 1;
+          transform: scale(1.5);
+        }
+        .hero-slider .slick-prev,
+        .hero-slider .slick-next {
+          z-index: 20;
+          width: 48px;
+          height: 48px;
+          transition: all 0.3s ease;
+        }
+        .hero-slider .slick-prev {
+          left: 20px;
+        }
+        .hero-slider .slick-next {
+          right: 20px;
+        }
+        .hero-slider .slick-prev:before,
+        .hero-slider .slick-next:before {
+          font-size: 48px;
+          opacity: 0.75;
+          transition: opacity 0.3s ease;
+        }
+        .hero-slider .slick-prev:hover:before,
+        .hero-slider .slick-next:hover:before {
+          opacity: 1;
+        }
+        @media (max-width: 1024px) {
+          .hero-slider .slick-prev,
+          .hero-slider .slick-next {
+            display: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };
