@@ -77,7 +77,7 @@ const CMSLayout = () => {
       path: '/cms/products',
       submenu: [
         { title: 'All Products', path: '/cms/products' },
-        { title: 'Add Product', path: '/cms/products/add' },
+        { title: 'Add Product', path: '/cms/products/new' },
         { title: 'Categories', path: '/cms/products/categories' }
       ]
     },

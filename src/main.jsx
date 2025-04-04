@@ -27,7 +27,10 @@ import SignUp from "./components/SignUp.jsx";
 
 // CMS Components
 import CMSLayout from './components/cms/CMSLayout';
+import CMSDashboard from './components/cms/Dashboard';
+import CMSProducts from './components/cms/Products';
 import ProductForm from './components/cms/ProductForm';
+import CMSOrders from './components/cms/Orders';
 
 // Client Routes (currently using placeholders)
 const HomePage = () => <div className="container mx-auto px-4 py-8">Home Page</div>;
@@ -139,15 +142,15 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Dashboard />
+        element: <CMSDashboard />
       },
       {
         path: "dashboard",
-        element: <Dashboard />
+        element: <CMSDashboard />
       },
       {
         path: "products",
-        element: <Products />
+        element: <CMSProducts />
       },
       {
         path: "products/new",
@@ -159,7 +162,7 @@ const router = createBrowserRouter([
       },
       {
         path: "orders",
-        element: <Orders />
+        element: <CMSOrders />
       },
       {
         path: "orders/:id",
