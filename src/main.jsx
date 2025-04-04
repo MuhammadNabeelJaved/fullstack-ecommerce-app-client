@@ -1,5 +1,5 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import "./index.css";
 import App from "./App.jsx";
@@ -15,6 +15,10 @@ import Faqs from "./components/Faqs.jsx";
 import Policy from "./components/Policy.jsx";
 import TermsOfService from "./components/TermsOfService.jsx";
 import CookiePolicy from "./components/CookiePolicy.jsx";
+import DashboardLayout from "./components/dashboard/DashboardLayout.jsx";
+import Dashboard from "./components/dashboard/Dashboard.jsx";
+import Orders from "./components/dashboard/Orders.jsx";
+import Profile from "./components/dashboard/Profile.jsx";
 
 const router = createBrowserRouter([
   {
@@ -65,12 +69,46 @@ const router = createBrowserRouter([
         path: "/cookies",
         element: <CookiePolicy />,
       },
+      {
+        path: "dashboard",
+        element: <DashboardLayout />,
+        children: [
+          {
+            index: true,
+            element: <Dashboard />,
+          },
+          {
+            path: "orders",
+            element: <Orders />,
+          },
+          {
+            path: "order-history",
+            element: <Orders />,
+          },
+          {
+            path: "profile",
+            element: <Profile />,
+          },
+          {
+            path: "wishlist",
+            element: <div>Wishlist Page</div>,
+          },
+          {
+            path: "support",
+            element: <div>Support Page</div>,
+          },
+          {
+            path: "settings",
+            element: <div>Settings Page</div>,
+          },
+        ],
+      },
     ],
   },
 ]);
 
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
     <RouterProvider router={router} />
-  </StrictMode>
+  </React.StrictMode>
 );
