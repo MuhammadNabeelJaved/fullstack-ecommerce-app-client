@@ -1,22 +1,37 @@
-import React from 'react';
-import { Facebook, Twitter, Instagram, Mail, MapPin, Phone } from 'lucide-react';
+import React, { useState } from 'react';
+import { Facebook, Twitter, Instagram, Mail, MapPin, Phone, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [email, setEmail] = useState('');
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (email.trim() !== '') {
+      // In a real app, you would submit this to your backend
+      console.log('Subscribed with email:', email);
+      setIsSubscribed(true);
+      setEmail('');
+      // Reset after 3 seconds
+      setTimeout(() => setIsSubscribed(false), 3000);
+    }
+  };
   
   // This would normally use NavLink, but for demonstration purposes
   // we're using regular links that would be replaced with NavLink in your app
   const FooterLink = ({ to, children }) => (
-    <a 
-      href={to} 
+    <Link 
+      to={to} 
       className="text-gray-600 hover:text-indigo-600 transition-colors duration-300"
     >
       {children}
-    </a>
+    </Link>
   );
   
   return (
-    <footer className="bg-gray-100">
+    <footer className="bg-gray-100 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand and Description */}
@@ -102,16 +117,29 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-gray-200">
           <div className="max-w-md mx-auto">
             <h3 className="text-lg font-semibold text-gray-800 text-center mb-4">Subscribe to Our Newsletter</h3>
-            <div className="flex">
-              <input 
-                type="email" 
-                placeholder="Your email address" 
-                className="flex-grow px-4 py-2 rounded-l-md border-y border-l border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              />
-              <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-r-md transition-colors duration-300">
-                Subscribe
+            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row">
+              <div className="relative flex-grow">
+                <input 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email address" 
+                  className="w-full px-4 py-3 rounded-lg sm:rounded-r-none border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                />
+                {isSubscribed && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-indigo-500 bg-opacity-90 rounded-lg sm:rounded-r-none text-white font-medium">
+                    Thanks for subscribing!
+                  </div>
+                )}
+              </div>
+              <button 
+                type="submit" 
+                className="mt-2 sm:mt-0 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg sm:rounded-l-none transition-colors duration-300 flex items-center justify-center"
+              >
+                Subscribe <ArrowRight size={16} className="ml-2" />
               </button>
-            </div>
+            </form>
           </div>
         </div>
 

@@ -36,7 +36,7 @@ const Cart = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center px-4 pt-20 mt-4">
+      <div className="min-h-[70vh] flex flex-col items-center justify-center px-4 pt-16">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -65,7 +65,7 @@ const Cart = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10 pt-20 mt-4">
+    <div className="max-w-7xl mx-auto px-4 py-10 pt-16">
       <motion.div 
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}

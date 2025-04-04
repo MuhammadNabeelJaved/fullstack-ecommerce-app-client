@@ -96,7 +96,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row pt-20 mt-4">
+    <div className="min-h-screen flex flex-col md:flex-row pt-16">
       {/* Left side - Image and Quote */}
       <motion.div 
         initial={{ opacity: 0, x: -20 }}
