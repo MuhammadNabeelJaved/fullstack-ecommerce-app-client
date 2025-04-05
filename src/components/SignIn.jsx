@@ -180,6 +180,25 @@ const SignIn = () => {
                 ) : 'Log In'}
               </motion.button>
             </motion.div>
+            
+            {/* Demo OTP Verification Link */}
+            {/* <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.65, duration: 0.5 }}
+              className="mt-3"
+            >
+              <Link to="/verify-otp">
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-indigo-100 text-indigo-700 py-3 px-4 rounded-lg hover:bg-indigo-200 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer shadow-sm"
+                >
+                  Demo: OTP Verification
+                </motion.button>
+              </Link>
+            </motion.div> */}
           </form>
           
           <motion.div 

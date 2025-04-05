@@ -24,6 +24,7 @@ import Profile from "./components/dashboard/Profile.jsx";
 import ProductView from "./components/ProductView.jsx";
 import SignIn from "./components/SignIn.jsx";
 import SignUp from "./components/SignUp.jsx";
+import OTPVerification from "./components/OTPVerification.jsx";
 
 // CMS Components
 import CMSLayout from './components/cms/CMSLayout';
@@ -133,6 +134,10 @@ const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignUp />,
+      },
+      {
+        path: "/verify-otp",
+        element: <OTPVerification />,
       },
     ]
   },
