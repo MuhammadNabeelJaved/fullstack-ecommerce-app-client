@@ -167,6 +167,10 @@ const router = createBrowserRouter([
         element: <ProductForm />
       },
       {
+        path: "products/view/:id",
+        element: <ProductView />
+      },
+      {
         path: "products/edit/:id",
         element: <ProductForm />
       },
