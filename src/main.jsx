@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import "./index.css";
@@ -27,23 +27,44 @@ import SignUp from "./components/SignUp.jsx";
 import OTPVerification from "./components/OTPVerification.jsx";
 
 // CMS Components
-import CMSLayout from './components/cms/CMSLayout';
-import CMSDashboard from './components/cms/Dashboard';
-import CMSProducts from './components/cms/Products';
-import ProductForm from './components/cms/ProductForm';
-import CMSOrders from './components/cms/Orders';
-import Customers from './components/cms/Customers';
-import Support from './components/cms/Support';
-import Analytics from './components/cms/Analytics';
-import Settings from './components/cms/Settings';
-import Promotions from './components/cms/Promotions';
+import CMSLayout from "./components/cms/CMSLayout";
+import CMSDashboard from "./components/cms/Dashboard";
+import CMSProducts from "./components/cms/Products";
+import ProductForm from "./components/cms/ProductForm";
+import CMSOrders from "./components/cms/Orders";
+import Customers from "./components/cms/Customers";
+import Support from "./components/cms/Support";
+import Analytics from "./components/cms/Analytics";
+import Settings from "./components/cms/Settings";
+import Promotions from "./components/cms/Promotions";
 
 // Client Routes (currently using placeholders)
-const HomePage = () => <div className="container mx-auto px-4 py-8">Home Page</div>;
-const ProductsPage = () => <div className="container mx-auto px-4 py-8">Products Page</div>;
-const ProductPage = () => <div className="container mx-auto px-4 py-8">Product Details Page</div>;
-const CartPage = () => <div className="container mx-auto px-4 py-8">Cart Page</div>;
-const CheckoutPage = () => <div className="container mx-auto px-4 py-8">Checkout Page</div>;
+const HomePage = () => (
+  <div className="container mx-auto px-4 py-8">Home Page</div>
+);
+const ProductsPage = () => (
+  <div className="container mx-auto px-4 py-8">Products Page</div>
+);
+const ProductPage = () => (
+  <div className="container mx-auto px-4 py-8">Product Details Page</div>
+);
+const CartPage = () => (
+  <div className="container mx-auto px-4 py-8">Cart Page</div>
+);
+const CheckoutPage = () => (
+  <div className="container mx-auto px-4 py-8">Checkout Page</div>
+);
+
+// Use context api for protecting routes
+
+const ProtectedRoute = ({ children }) =>
+  useContext(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      return <Navigate to="/signin" />;
+    }
+  }, [user]);
+// CMS Routes (currently using placeholders)
 
 const router = createBrowserRouter([
   {
@@ -144,7 +165,7 @@ const router = createBrowserRouter([
         path: "/verify-otp",
         element: <OTPVerification />,
       },
-    ]
+    ],
   },
   {
     path: "/cms",
@@ -152,58 +173,58 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <CMSDashboard />
+        element: <CMSDashboard />,
       },
       {
         path: "dashboard",
-        element: <CMSDashboard />
+        element: <CMSDashboard />,
       },
       {
         path: "products",
-        element: <CMSProducts />
+        element: <CMSProducts />,
       },
       {
         path: "products/new",
-        element: <ProductForm />
+        element: <ProductForm />,
       },
       {
         path: "products/view/:id",
-        element: <ProductView />
+        element: <ProductView />,
       },
       {
         path: "products/edit/:id",
-        element: <ProductForm />
+        element: <ProductForm />,
       },
       {
         path: "orders",
-        element: <CMSOrders />
+        element: <CMSOrders />,
       },
       {
         path: "orders/:id",
-        element: <div>Order Details (To be implemented)</div>
+        element: <div>Order Details (To be implemented)</div>,
       },
       {
         path: "customers",
-        element: <Customers />
+        element: <Customers />,
       },
       {
         path: "analytics",
-        element: <Analytics />
+        element: <Analytics />,
       },
       {
         path: "support",
-        element: <Support />
+        element: <Support />,
       },
       {
         path: "settings",
-        element: <Settings />
+        element: <Settings />,
       },
       {
         path: "promotions",
-        element: <Promotions />
-      }
-    ]
-  }
+        element: <Promotions />,
+      },
+    ],
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
