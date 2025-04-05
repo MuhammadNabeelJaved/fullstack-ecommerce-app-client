@@ -1,186 +1,172 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import {
   Search,
   Filter,
-  ArrowUpDown,
-  Eye,
-  Download,
-  CheckCircle2,
-  XCircle,
-  Truck,
-  Package,
-  Clock,
-  AlertCircle,
-  MoreHorizontal,
-  Calendar,
   ChevronDown,
-  FileText,
-  Send
+  ArrowUpDown,
+  ChevronRight,
+  Download,
+  Printer
 } from 'lucide-react';
 
 const Orders = () => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOpen, setFilterOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState('all');
   const [sortField, setSortField] = useState('date');
   const [sortDirection, setSortDirection] = useState('desc');
-  const [expandedOrder, setExpandedOrder] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   
-  const statusOptions = [
-    { value: 'all', label: 'All Orders' },
-    { value: 'pending', label: 'Pending', icon: <Clock className="h-4 w-4" /> },
-    { value: 'processing', label: 'Processing', icon: <Package className="h-4 w-4" /> },
-    { value: 'shipped', label: 'Shipped', icon: <Truck className="h-4 w-4" /> },
-    { value: 'delivered', label: 'Delivered', icon: <CheckCircle2 className="h-4 w-4" /> },
-    { value: 'cancelled', label: 'Cancelled', icon: <XCircle className="h-4 w-4" /> },
-  ];
-  
-  const dateFilters = [
-    { value: 'all', label: 'All Time' },
-    { value: 'today', label: 'Today' },
-    { value: 'week', label: 'This Week' },
-    { value: 'month', label: 'This Month' },
-    { value: 'custom', label: 'Custom Range' },
-  ];
-  
-  const orders = [
+  // Sample data
+  const sampleOrders = [
     {
-      id: 'ORD-7352',
+      id: 'ORD-9385',
       customer: {
         name: 'John Smith',
-        email: 'john.smith@example.com',
-        avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
+        email: 'john@example.com',
+        address: '123 Main St, Anytown, CA 94566'
       },
-      date: '2024-03-18 10:45 AM',
-      total: 156.00,
-      status: 'pending',
-      paymentMethod: 'Credit Card',
+      date: '2023-09-22T08:40:51.620Z',
       items: [
-        { id: 1, name: 'Wireless Headphones', price: 129.99, quantity: 1, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100' },
-        { id: 2, name: 'Phone Case', price: 24.99, quantity: 1, image: 'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=100' }
+        { id: 1, name: 'Wireless Headphones', price: 199.99, quantity: 1 },
+        { id: 2, name: 'USB-C Cable', price: 19.99, quantity: 2 }
       ],
-      shippingAddress: {
-        street: '123 Main Street',
-        city: 'New York',
-        state: 'NY',
-        zip: '10001',
-        country: 'USA'
-      }
-    },
-    {
-      id: 'ORD-7351',
-      customer: {
-        name: 'Emma Wilson',
-        email: 'emma.wilson@example.com',
-        avatar: 'https://randomuser.me/api/portraits/women/2.jpg'
-      },
-      date: '2024-03-18 09:12 AM',
-      total: 249.99,
+      total: 239.97,
       status: 'processing',
-      paymentMethod: 'PayPal',
-      items: [
-        { id: 2, name: 'Smart Watch Series 5', price: 299.99, quantity: 1, image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=100' }
-      ],
-      shippingAddress: {
-        street: '456 Park Avenue',
-        city: 'Boston',
-        state: 'MA',
-        zip: '02108',
-        country: 'USA'
-      }
+      paymentMethod: 'credit_card',
+      shippingMethod: 'express'
     },
     {
-      id: 'ORD-7350',
+      id: 'ORD-9384',
+      customer: {
+        name: 'Emma Johnson',
+        email: 'emma@example.com',
+        address: '456 Oak Ave, Springfield, IL 62701'
+      },
+      date: '2023-09-22T07:15:22.120Z',
+      items: [
+        { id: 3, name: 'Smartphone Case', price: 29.99, quantity: 1 }
+      ],
+      total: 29.99,
+      status: 'delivered',
+      paymentMethod: 'paypal',
+      shippingMethod: 'standard'
+    },
+    {
+      id: 'ORD-9383',
       customer: {
         name: 'Michael Brown',
-        email: 'michael.brown@example.com',
-        avatar: 'https://randomuser.me/api/portraits/men/3.jpg'
+        email: 'michael@example.com',
+        address: '789 Pine Rd, Westfield, NJ 07090'
       },
-      date: '2024-03-17 03:22 PM',
-      total: 89.99,
+      date: '2023-09-21T14:30:11.830Z',
+      items: [
+        { id: 4, name: 'Smart Watch', price: 299.99, quantity: 1 },
+        { id: 5, name: 'Wireless Charger', price: 49.99, quantity: 1 },
+        { id: 6, name: 'Screen Protector', price: 14.99, quantity: 2 }
+      ],
+      total: 379.96,
       status: 'shipped',
-      paymentMethod: 'Credit Card',
-      items: [
-        { id: 3, name: 'Bluetooth Speaker', price: 79.99, quantity: 1, image: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=100' },
-        { id: 4, name: 'USB-C Cable', price: 9.99, quantity: 1, image: 'https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=100' }
-      ],
-      tracking: {
-        number: 'TRK123456789',
-        carrier: 'FedEx',
-        estimatedDelivery: '2024-03-20'
-      },
-      shippingAddress: {
-        street: '789 Elm Street',
-        city: 'Chicago',
-        state: 'IL',
-        zip: '60007',
-        country: 'USA'
-      }
+      paymentMethod: 'credit_card',
+      shippingMethod: 'standard'
     },
     {
-      id: 'ORD-7349',
+      id: 'ORD-9382',
       customer: {
-        name: 'Sophia Davis',
-        email: 'sophia.davis@example.com',
-        avatar: 'https://randomuser.me/api/portraits/women/4.jpg'
+        name: 'Sarah Williams',
+        email: 'sarah@example.com',
+        address: '101 Cedar St, Portland, OR 97205'
       },
-      date: '2024-03-17 09:45 AM',
-      total: 345.00,
+      date: '2023-09-21T09:22:45.330Z',
+      items: [
+        { id: 7, name: 'Bluetooth Speaker', price: 89.99, quantity: 1 }
+      ],
+      total: 89.99,
       status: 'delivered',
-      paymentMethod: 'Credit Card',
-      items: [
-        { id: 5, name: 'Laptop Backpack', price: 49.99, quantity: 1, image: 'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=100' },
-        { id: 6, name: 'Ultra HD Monitor 27"', price: 295.00, quantity: 1, image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=100' }
-      ],
-      tracking: {
-        number: 'TRK987654321',
-        carrier: 'UPS',
-        deliveredDate: '2024-03-18 12:30 PM'
-      },
-      shippingAddress: {
-        street: '321 Oak Drive',
-        city: 'Los Angeles',
-        state: 'CA',
-        zip: '90001',
-        country: 'USA'
-      }
+      paymentMethod: 'paypal',
+      shippingMethod: 'standard'
     },
     {
-      id: 'ORD-7348',
+      id: 'ORD-9381',
       customer: {
-        name: 'Robert Johnson',
-        email: 'robert.johnson@example.com',
-        avatar: 'https://randomuser.me/api/portraits/men/5.jpg'
+        name: 'David Miller',
+        email: 'david@example.com',
+        address: '222 Elm St, Austin, TX 78701'
       },
-      date: '2024-03-16 06:18 PM',
-      total: 59.99,
-      status: 'cancelled',
-      paymentMethod: 'Credit Card',
+      date: '2023-09-20T16:45:33.220Z',
       items: [
-        { id: 7, name: 'Wireless Charging Pad', price: 35.99, quantity: 1, image: 'https://images.unsplash.com/photo-1608751819407-8c8672b7878b?w=100' },
-        { id: 8, name: 'Phone Screen Protector', price: 12.00, quantity: 2, image: 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=100' }
+        { id: 8, name: 'Wireless Keyboard', price: 129.99, quantity: 1 },
+        { id: 9, name: 'Mouse Pad', price: 19.99, quantity: 1 }
       ],
-      cancellationReason: 'Customer requested cancellation',
-      shippingAddress: {
-        street: '555 Maple Lane',
-        city: 'Seattle',
-        state: 'WA',
-        zip: '98101',
-        country: 'USA'
-      }
+      total: 149.98,
+      status: 'processing',
+      paymentMethod: 'credit_card',
+      shippingMethod: 'express'
+    },
+    {
+      id: 'ORD-9380',
+      customer: {
+        name: 'Jennifer Davis',
+        email: 'jennifer@example.com',
+        address: '333 Maple Dr, Chicago, IL 60611'
+      },
+      date: '2023-09-19T11:10:09.910Z',
+      items: [
+        { id: 10, name: 'External Hard Drive', price: 149.99, quantity: 1 }
+      ],
+      total: 149.99,
+      status: 'cancelled',
+      paymentMethod: 'credit_card',
+      shippingMethod: 'standard'
+    },
+    {
+      id: 'ORD-9379',
+      customer: {
+        name: 'Robert Wilson',
+        email: 'robert@example.com',
+        address: '444 Birch Ln, Seattle, WA 98101'
+      },
+      date: '2023-09-18T13:25:47.720Z',
+      items: [
+        { id: 11, name: 'Gaming Mouse', price: 79.99, quantity: 1 },
+        { id: 12, name: 'Gaming Keyboard', price: 129.99, quantity: 1 }
+      ],
+      total: 209.98,
+      status: 'delivered',
+      paymentMethod: 'paypal',
+      shippingMethod: 'express'
+    },
+    {
+      id: 'ORD-9378',
+      customer: {
+        name: 'Lisa Anderson',
+        email: 'lisa@example.com',
+        address: '555 Spruce Ct, Denver, CO 80202'
+      },
+      date: '2023-09-17T09:50:33.550Z',
+      items: [
+        { id: 13, name: 'Laptop Sleeve', price: 39.99, quantity: 1 },
+        { id: 14, name: 'USB Hub', price: 29.99, quantity: 1 }
+      ],
+      total: 69.98,
+      status: 'pending',
+      paymentMethod: 'credit_card',
+      shippingMethod: 'standard'
     }
   ];
   
-  // Toggle order expansion
-  const toggleOrderExpansion = (orderId) => {
-    if (expandedOrder === orderId) {
-      setExpandedOrder(null);
-    } else {
-      setExpandedOrder(orderId);
-    }
-  };
+  // Load orders
+  useEffect(() => {
+    setLoading(true);
+    // Simulate API call
+    setTimeout(() => {
+      setOrders(sampleOrders);
+      setLoading(false);
+    }, 500);
+  }, []);
   
   // Handle sort toggle
   const handleSort = (field) => {
@@ -192,72 +178,93 @@ const Orders = () => {
     }
   };
   
-  // Filter orders
-  let filteredOrders = [...orders];
+  // Format date
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+  };
   
-  // Apply search filter
-  if (searchTerm) {
-    filteredOrders = filteredOrders.filter(
-      order => order.id.toLowerCase().includes(searchTerm.toLowerCase()) || 
-             order.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-             order.customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+  // Format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(amount);
+  };
+  
+  // Get status badge
+  const getStatusBadge = (status) => {
+    let bgColor = '';
+    
+    switch (status) {
+      case 'pending':
+        bgColor = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
+        break;
+      case 'processing':
+        bgColor = 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
+        break;
+      case 'shipped':
+        bgColor = 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400';
+        break;
+      case 'delivered':
+        bgColor = 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
+        break;
+      case 'cancelled':
+        bgColor = 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+        break;
+      default:
+        bgColor = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400';
+    }
+    
+    return (
+      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bgColor}`}>
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </span>
     );
-  }
+  };
   
-  // Apply status filter
-  if (selectedStatus !== 'all') {
-    filteredOrders = filteredOrders.filter(order => order.status === selectedStatus);
-  }
+  // Filter orders
+  const filteredOrders = orders.filter(order => {
+    // Apply status filter
+    if (statusFilter !== 'all' && order.status !== statusFilter) {
+      return false;
+    }
+    
+    // Apply search filter
+    if (searchTerm && !(
+      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+    )) {
+      return false;
+    }
+    
+    return true;
+  });
   
-  // Apply sorting
-  filteredOrders.sort((a, b) => {
+  // Sort orders
+  const sortedOrders = [...filteredOrders].sort((a, b) => {
     let comparison = 0;
-    if (sortField === 'date') {
-      comparison = new Date(a.date) - new Date(b.date);
-    } else if (sortField === 'total') {
-      comparison = a.total - b.total;
-    } else if (sortField === 'id') {
-      comparison = a.id.localeCompare(b.id);
+    
+    switch (sortField) {
+      case 'id':
+        comparison = a.id.localeCompare(b.id);
+        break;
+      case 'customer':
+        comparison = a.customer.name.localeCompare(b.customer.name);
+        break;
+      case 'date':
+        comparison = new Date(a.date) - new Date(b.date);
+        break;
+      case 'total':
+        comparison = a.total - b.total;
+        break;
+      default:
+        comparison = 0;
     }
     
     return sortDirection === 'asc' ? comparison : -comparison;
   });
-  
-  // Get status color
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'pending':
-        return 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/30';
-      case 'processing':
-        return 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/30';
-      case 'shipped':
-        return 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800/30';
-      case 'delivered':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/30';
-      case 'cancelled':
-        return 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800/30';
-      default:
-        return 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-900/30 dark:text-gray-400 dark:border-gray-800/30';
-    }
-  };
-  
-  // Get status icon
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'pending':
-        return <Clock className="w-4 h-4 mr-1" />;
-      case 'processing':
-        return <Package className="w-4 h-4 mr-1" />;
-      case 'shipped':
-        return <Truck className="w-4 h-4 mr-1" />;
-      case 'delivered':
-        return <CheckCircle2 className="w-4 h-4 mr-1" />;
-      case 'cancelled':
-        return <XCircle className="w-4 h-4 mr-1" />;
-      default:
-        return <AlertCircle className="w-4 h-4 mr-1" />;
-    }
-  };
   
   return (
     <div className="space-y-6">
@@ -265,335 +272,238 @@ const Orders = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Orders</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Manage and process customer orders</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Manage and track customer orders</p>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex space-x-2">
           <button
             onClick={() => {}}
-            className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-650 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            <Calendar className="h-4 w-4 mr-2" />
-            Today's Orders
-          </button>
-          <button
-            onClick={() => {}}
-            className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-650 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-650 focus:outline-none"
           >
             <Download className="h-4 w-4 mr-2" />
             Export
           </button>
+          <button
+            onClick={() => {}}
+            className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-650 focus:outline-none"
+          >
+            <Printer className="h-4 w-4 mr-2" />
+            Print
+          </button>
         </div>
       </div>
       
-      {/* Search and Filters */}
-      <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-        <div className="p-4">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white"
-                placeholder="Search by order ID, customer name or email..."
-              />
+      {/* Filters */}
+      <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="relative flex-1">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
             </div>
-            
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setFilterOpen(!filterOpen)}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-650 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                <Filter className="h-4 w-4 mr-2" />
-                Filters
-                <ChevronDown className={`h-4 w-4 ml-1 transition-transform ${filterOpen ? 'rotate-180' : ''}`} />
-              </button>
-            </div>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white"
+              placeholder="Search orders..."
+            />
           </div>
           
-          {/* Filters panel */}
-          {filterOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setFilterOpen(!filterOpen)}
+              className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-650 focus:outline-none"
             >
-              <div className="flex flex-wrap gap-4">
-                <div className="flex flex-wrap gap-2">
-                  {statusOptions.map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() => setSelectedStatus(option.value)}
-                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm ${
-                        selectedStatus === option.value
-                          ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300'
-                          : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-650'
-                      }`}
-                    >
-                      {option.icon && <span className="mr-1.5">{option.icon}</span>}
-                      {option.label}
-                      {selectedStatus === option.value && (
-                        <span className="ml-1.5 text-xs bg-indigo-200 dark:bg-indigo-800 text-indigo-800 dark:text-indigo-300 rounded-full px-1.5">
-                          {filteredOrders.filter(o => option.value === 'all' ? true : o.status === option.value).length}
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
+              <Filter className="h-4 w-4 mr-2" />
+              Filters
+              <ChevronDown className={`ml-1.5 h-4 w-4 transition-transform ${filterOpen ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {/* Status Filter Buttons */}
+            <div className="hidden lg:flex gap-2">
+              {['all', 'pending', 'processing', 'shipped', 'delivered', 'cancelled'].map((status) => (
+                <button
+                  key={status}
+                  onClick={() => setStatusFilter(status)}
+                  className={`inline-flex items-center px-3 py-2 border shadow-sm text-sm leading-4 font-medium rounded-md focus:outline-none ${
+                    status === statusFilter
+                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-500'
+                      : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-650'
+                  }`}
+                >
+                  {status === 'all' ? 'All Orders' : status.charAt(0).toUpperCase() + status.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
         
-        {/* Orders List */}
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-750">
-              <tr>
-                <th 
-                  scope="col" 
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
-                  onClick={() => handleSort('id')}
+        {/* Expanded Filters */}
+        {filterOpen && (
+          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Order Status
+                </label>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="block w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:text-white"
                 >
-                  <div className="flex items-center">
-                    Order ID
-                    <ArrowUpDown className="ml-1 h-3 w-3" />
-                  </div>
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Customer
-                </th>
-                <th 
-                  scope="col" 
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
-                  onClick={() => handleSort('date')}
+                  <option value="all">All Orders</option>
+                  <option value="pending">Pending</option>
+                  <option value="processing">Processing</option>
+                  <option value="shipped">Shipped</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Time Period
+                </label>
+                <select
+                  className="block w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:text-white"
                 >
-                  <div className="flex items-center">
-                    Date
-                    <ArrowUpDown className="ml-1 h-3 w-3" />
-                  </div>
-                </th>
-                <th 
-                  scope="col" 
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
-                  onClick={() => handleSort('total')}
+                  <option>Today</option>
+                  <option>Yesterday</option>
+                  <option>Last 7 days</option>
+                  <option>Last 30 days</option>
+                  <option>This month</option>
+                  <option>Last month</option>
+                  <option>Custom range</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Payment Method
+                </label>
+                <select
+                  className="block w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:text-white"
                 >
-                  <div className="flex items-center">
-                    Total
-                    <ArrowUpDown className="ml-1 h-3 w-3" />
-                  </div>
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Status
-                </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {filteredOrders.map((order) => (
-                <React.Fragment key={order.id}>
-                  <tr 
-                    className={`hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors ${expandedOrder === order.id ? 'bg-gray-50 dark:bg-gray-750' : ''}`}
-                    onClick={() => toggleOrderExpansion(order.id)}
+                  <option>All methods</option>
+                  <option>Credit Card</option>
+                  <option>PayPal</option>
+                  <option>Bank Transfer</option>
+                  <option>Cash on Delivery</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      {/* Orders Table */}
+      <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        {loading ? (
+          <div className="p-8 text-center">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-indigo-600 motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+              <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
+            </div>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Loading orders...</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-750">
+                <tr>
+                  <th 
+                    scope="col" 
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    onClick={() => handleSort('id')}
                   >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white cursor-pointer">
-                      {order.id}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="h-8 w-8 flex-shrink-0">
-                          <img className="h-8 w-8 rounded-full" src={order.customer.avatar} alt="" />
-                        </div>
-                        <div className="ml-3">
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">{order.customer.name}</div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400">{order.customer.email}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {order.date}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                      ${order.total.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(order.status)}`}>
-                        {getStatusIcon(order.status)}
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex justify-end items-center space-x-2">
-                        <Link to={`/cms/orders/${order.id}`} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">
-                          <Eye className="h-4 w-4" />
-                        </Link>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // Show dropdown menu
-                          }}
-                          className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-300"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </button>
-                      </div>
+                    <div className="flex items-center cursor-pointer">
+                      Order
+                      <ArrowUpDown className="ml-1 h-3 w-3" />
+                    </div>
+                  </th>
+                  <th 
+                    scope="col" 
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    onClick={() => handleSort('customer')}
+                  >
+                    <div className="flex items-center cursor-pointer">
+                      Customer
+                      <ArrowUpDown className="ml-1 h-3 w-3" />
+                    </div>
+                  </th>
+                  <th 
+                    scope="col" 
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    onClick={() => handleSort('date')}
+                  >
+                    <div className="flex items-center cursor-pointer">
+                      Date
+                      <ArrowUpDown className="ml-1 h-3 w-3" />
+                    </div>
+                  </th>
+                  <th 
+                    scope="col" 
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Status
+                  </th>
+                  <th 
+                    scope="col" 
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    onClick={() => handleSort('total')}
+                  >
+                    <div className="flex items-center cursor-pointer">
+                      Total
+                      <ArrowUpDown className="ml-1 h-3 w-3" />
+                    </div>
+                  </th>
+                  <th scope="col" className="relative px-6 py-3">
+                    <span className="sr-only">Actions</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {sortedOrders.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
+                      No orders found matching your criteria.
                     </td>
                   </tr>
-                  
-                  {/* Expanded order details */}
-                  {expandedOrder === order.id && (
-                    <tr className="bg-gray-50 dark:bg-gray-750">
-                      <td colSpan="6" className="px-6 py-4">
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.2 }}
+                ) : (
+                  sortedOrders.map((order) => (
+                    <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-750">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-indigo-600 dark:text-indigo-400">{order.id}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">{order.items.length} item(s)</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{order.customer.name}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">{order.customer.email}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500 dark:text-gray-400">{formatDate(order.date)}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {getStatusBadge(order.status)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{formatCurrency(order.total)}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">{order.paymentMethod.replace('_', ' ')}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <Link
+                          to={`/cms/orders/${order.id}`}
+                          className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 flex items-center justify-end"
                         >
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {/* Order Items */}
-                            <div className="md:col-span-2 space-y-4">
-                              <h3 className="text-sm font-medium text-gray-900 dark:text-white">Order Items</h3>
-                              <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
-                                <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                                  {order.items.map((item) => (
-                                    <li key={item.id} className="p-3 flex items-center">
-                                      <div className="h-12 w-12 flex-shrink-0 rounded border border-gray-200 dark:border-gray-700 overflow-hidden">
-                                        <img className="h-full w-full object-cover" src={item.image} alt="" />
-                                      </div>
-                                      <div className="ml-4 flex-1">
-                                        <div className="text-sm font-medium text-gray-900 dark:text-white">{item.name}</div>
-                                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                                          ${item.price.toFixed(2)} × {item.quantity} = ${(item.price * item.quantity).toFixed(2)}
-                                        </div>
-                                      </div>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            </div>
-                            
-                            {/* Order Details */}
-                            <div className="space-y-4">
-                              <h3 className="text-sm font-medium text-gray-900 dark:text-white">Order Details</h3>
-                              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-3 space-y-3">
-                                <div>
-                                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400">Shipping Address</div>
-                                  <div className="text-sm text-gray-900 dark:text-white mt-1">
-                                    {order.shippingAddress.street}<br />
-                                    {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zip}<br />
-                                    {order.shippingAddress.country}
-                                  </div>
-                                </div>
-                                
-                                <div>
-                                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400">Payment Method</div>
-                                  <div className="text-sm text-gray-900 dark:text-white mt-1">{order.paymentMethod}</div>
-                                </div>
-                                
-                                {order.tracking && (
-                                  <div>
-                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">Tracking Information</div>
-                                    <div className="text-sm text-gray-900 dark:text-white mt-1">
-                                      {order.tracking.carrier}: {order.tracking.number}<br />
-                                      {order.tracking.estimatedDelivery && (
-                                        <span>Est. Delivery: {order.tracking.estimatedDelivery}</span>
-                                      )}
-                                      {order.tracking.deliveredDate && (
-                                        <span>Delivered: {order.tracking.deliveredDate}</span>
-                                      )}
-                                    </div>
-                                  </div>
-                                )}
-                                
-                                {order.cancellationReason && (
-                                  <div>
-                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">Cancellation Reason</div>
-                                    <div className="text-sm text-red-600 dark:text-red-400 mt-1">{order.cancellationReason}</div>
-                                  </div>
-                                )}
-                                
-                                <div className="pt-2 flex space-x-2">
-                                  <Link 
-                                    to={`/cms/orders/${order.id}`}
-                                    className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 shadow-sm text-xs font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                  >
-                                    <FileText className="h-3 w-3 mr-1" />
-                                    Details
-                                  </Link>
-                                  <button
-                                    className="inline-flex items-center px-2.5 py-1.5 border border-transparent shadow-sm text-xs font-medium rounded text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                  >
-                                    <Send className="h-3 w-3 mr-1" />
-                                    Email Customer
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
+                          View
+                          <ChevronRight className="ml-1 h-4 w-4" />
+                        </Link>
                       </td>
                     </tr>
-                  )}
-                </React.Fragment>
-              ))}
-              
-              {filteredOrders.length === 0 && (
-                <tr>
-                  <td colSpan="6" className="px-6 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
-                    No orders found matching your criteria
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-        
-        {/* Pagination */}
-        <div className="bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6">
-          <div className="flex-1 flex justify-between sm:hidden">
-            <button className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              Previous
-            </button>
-            <button className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              Next
-            </button>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-          <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm text-gray-700 dark:text-gray-300">
-                Showing <span className="font-medium">1</span> to <span className="font-medium">{filteredOrders.length}</span> of{' '}
-                <span className="font-medium">{filteredOrders.length}</span> results
-              </p>
-            </div>
-            <div>
-              <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                <button className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <span className="sr-only">Previous</span>
-                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </button>
-                <button className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  1
-                </button>
-                <button className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <span className="sr-only">Next</span>
-                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </nav>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -32,6 +32,11 @@ import CMSDashboard from './components/cms/Dashboard';
 import CMSProducts from './components/cms/Products';
 import ProductForm from './components/cms/ProductForm';
 import CMSOrders from './components/cms/Orders';
+import Customers from './components/cms/Customers';
+import Support from './components/cms/Support';
+import Analytics from './components/cms/Analytics';
+import Settings from './components/cms/Settings';
+import Promotions from './components/cms/Promotions';
 
 // Client Routes (currently using placeholders)
 const HomePage = () => <div className="container mx-auto px-4 py-8">Home Page</div>;
@@ -175,19 +180,23 @@ const router = createBrowserRouter([
       },
       {
         path: "customers",
-        element: <div>Customers (To be implemented)</div>
+        element: <Customers />
       },
       {
         path: "analytics",
-        element: <div>Analytics (To be implemented)</div>
+        element: <Analytics />
       },
       {
         path: "support",
-        element: <div>Support (To be implemented)</div>
+        element: <Support />
       },
       {
         path: "settings",
-        element: <div>Settings (To be implemented)</div>
+        element: <Settings />
+      },
+      {
+        path: "promotions",
+        element: <Promotions />
       }
     ]
   }

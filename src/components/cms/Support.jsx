@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import {
   Search,
   Filter,
@@ -19,7 +19,7 @@ import {
   Tag,
   Package,
   RefreshCw,
-  Tool
+
 } from 'lucide-react';
 
 const Support = () => {
