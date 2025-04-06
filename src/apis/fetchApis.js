@@ -79,9 +79,9 @@ export const logoutUser = async () => {
   }
 };
 
-export const refreshAccessToken = async () => {
+export const refreshAccessToken = async (accessToken, refreshToken) => {
   try {
-    const response = await api.post('/users/refresh-access-token');
+    const response = await api.post('/users/refresh-access-token', refreshToken);
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;

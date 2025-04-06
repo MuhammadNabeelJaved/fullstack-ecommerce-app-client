@@ -14,17 +14,19 @@ export const AuthProvider = ({ children }) => {
     const storedUser = localStorage.getItem("user");
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
-  
-    if (storedUser && accessToken && refreshToken) {
-      setUser(JSON.parse(storedUser));
-      setIsLoggedIn(true);
-      setLoading(false);
-    } else {
-      setIsLoggedIn(false);
-      setLoading(false);
-    }
+
+    apiService
+      .refreshAccessToken(accessToken, refreshToken)
+      .then((response) => {
+        login(response);
+        setLoading(false);
+        setIsLoggedIn(true);
+        setCurrentUser(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
-  
 
   const register = async (userData) => {
     if (!userData) return;
