@@ -13,8 +13,7 @@ const api = axios.create({
   withCredentials: true, // Important for handling cookies (refresh tokens)
 });
 
-api.interceptors.response.use(
-  (response) => response,
+api.interceptors.response.use((response) => response,
   async (error) => {
     const originalRequest = error.config;
 
@@ -26,8 +25,9 @@ api.interceptors.response.use(
         // Attempt to refresh token
         const refreshToken = localStorage.getItem("refreshToken");
         const response = await refreshAccessToken(refreshToken);
-        localStorage.setItem("accessToken", response.accessToken); // Update access token in local storage
-        originalRequest.headers['Authorization'] = `Bearer ${response.accessToken}`;
+        console.log("response in apis.js:", response);
+        localStorage.setItem("accessToken", response.data?.accessToken); // Update access token in local storage
+        originalRequest.headers['Authorization'] = `Bearer ${response.data?.accessToken}`;
         return api(originalRequest); // Retry the original request
       } catch (refreshError) {
         // Redirect to login if refresh fails
@@ -80,13 +80,14 @@ export const logoutUser = async () => {
   }
 };
 
-// Refresh access token function
+// Make sure this matches the server's expected format
 export const refreshAccessToken = async (refreshToken) => {
   try {
     const response = await api.post('/users/refresh-access-token', { refreshToken });
-    return response.data; // Return new access token
+    return response; // Return the entire response for consistent handling
   } catch (error) {
-    throw error.response?.data || error.message;
+    console.error("Refresh token error:", error);
+    throw error;
   }
 };
 

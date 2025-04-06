@@ -12,41 +12,48 @@ export const AuthProvider = ({ children }) => {
 
   // Check if user is already logged in
   useEffect(() => {
+  const checkAuth = async () => {
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
 
-    console.log("Access Token in context:", accessToken);
-    console.log("Refresh Token in context:", refreshToken);
+    console.log("Startup check - Access Token:", accessToken);
+    console.log("Startup check - Refresh Token:", refreshToken);
 
     if (accessToken && refreshToken) {
-      apiService
-        .refreshAccessToken(refreshToken)
-        .then((response) => {
-          setIsLoggedIn(true);
-          setCurrentUser(response.userData);
-          setLoading(false);
-          console.log("New genrated access Token is :", response);
-          console.log("New genrated access Token is :", response?.data?.accessToken);
-          console.log("New genrated Refresh Token is :", response?.data?.refreshToken);
-          localStorage.setItem("accessToken", response.accessToken);
-          localStorage.setItem("refreshToken", response.refreshToken);
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-        });
+      // Directly set logged in state from tokens
+      setIsLoggedIn(true);
+      
+      try {
+        // Try to get user data from token
+        const response = await apiService.getUserProfile(); // Create this method in apiService
+        if (response?.data) {
+          setCurrentUser(response.data);
+          setUser(response.data);
+        }
+      } catch (err) {
+        console.error("Failed to get user profile:", err);
+        // Even if profile fetch fails, keep user logged in if tokens exist
+      } finally {
+        setLoading(false);
+      }
     } else {
       setLoading(false);
     }
-  }, []);
+  };
+
+  checkAuth();
+}, []);
 
   const login = (userData) => {
-    if (!userData) return;
+    if (!userData?.data) return;
+    
     setIsLoggedIn(true);
-    setUser(userData);
-    setCurrentUser(userData);
-    localStorage.setItem("accessToken", userData?.data?.accessToken);
-    localStorage.setItem("refreshToken", userData?.data?.refreshToken);
+    setUser(userData.data.userData || userData.data);
+    setCurrentUser(userData.data.userData || userData.data);
+    
+    // Store tokens
+    localStorage.setItem("accessToken", userData.data.accessToken);
+    localStorage.setItem("refreshToken", userData.data.refreshToken);
   };
 
   const logout = () => {
