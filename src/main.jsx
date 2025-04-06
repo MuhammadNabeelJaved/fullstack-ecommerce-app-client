@@ -4,6 +4,8 @@ import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import "./index.css";
+import { useAuth, AuthProvider } from "./contextApi/context.jsx";
+import ProtectedRoute from "./contextApi/ProtectedRoutes.jsx";
 import App from "./App.jsx";
 import Layout from "./layout/Layout.jsx";
 import Home from "./pages/Home.jsx";
@@ -38,33 +40,6 @@ import Analytics from "./components/cms/Analytics";
 import Settings from "./components/cms/Settings";
 import Promotions from "./components/cms/Promotions";
 
-// Client Routes (currently using placeholders)
-const HomePage = () => (
-  <div className="container mx-auto px-4 py-8">Home Page</div>
-);
-const ProductsPage = () => (
-  <div className="container mx-auto px-4 py-8">Products Page</div>
-);
-const ProductPage = () => (
-  <div className="container mx-auto px-4 py-8">Product Details Page</div>
-);
-const CartPage = () => (
-  <div className="container mx-auto px-4 py-8">Cart Page</div>
-);
-const CheckoutPage = () => (
-  <div className="container mx-auto px-4 py-8">Checkout Page</div>
-);
-
-// Use context api for protecting routes
-
-const ProtectedRoute = ({ children }) =>
-  useContext(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) {
-      return <Navigate to="/signin" />;
-    }
-  }, [user]);
-// CMS Routes (currently using placeholders)
 
 const router = createBrowserRouter([
   {
@@ -97,7 +72,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/checkout",
-        element: <Checkout />,
+        element: <ProtectedRoute element={<Checkout />} />,
       },
       {
         path: "/faq",
@@ -121,35 +96,35 @@ const router = createBrowserRouter([
       },
       {
         path: "dashboard",
-        element: <DashboardLayout />,
+        element: <ProtectedRoute element={<DashboardLayout />} />,
         children: [
           {
             index: true,
-            element: <Dashboard />,
+            element: <ProtectedRoute element={<Dashboard />} />,
           },
           {
             path: "orders",
-            element: <Orders />,
+            element: <ProtectedRoute element={<Orders />} />,
           },
           {
             path: "order-history",
-            element: <Orders />,
+            element: <ProtectedRoute element={<Orders />} />,
           },
           {
             path: "profile",
-            element: <Profile />,
+            element: <ProtectedRoute element={<Profile />} />,
           },
           {
             path: "wishlist",
-            element: <div>Wishlist Page</div>,
+            element: <ProtectedRoute element={<div>Wishlist Page</div>} />,
           },
           {
             path: "support",
-            element: <div>Support Page</div>,
+            element: <ProtectedRoute element={<div>Support Page</div>} />,
           },
           {
             path: "settings",
-            element: <div>Settings Page</div>,
+            element: <ProtectedRoute element={<div>Settings Page</div>} />,
           },
         ],
       },
@@ -169,59 +144,63 @@ const router = createBrowserRouter([
   },
   {
     path: "/cms",
-    element: <CMSLayout />,
+    element: <ProtectedRoute element={<CMSLayout />} />,
     children: [
       {
         index: true,
-        element: <CMSDashboard />,
+        element: <ProtectedRoute element={<CMSDashboard />} />,
       },
       {
         path: "dashboard",
-        element: <CMSDashboard />,
+        element: <ProtectedRoute element={<CMSDashboard />} />,
       },
       {
         path: "products",
-        element: <CMSProducts />,
+        element: <ProtectedRoute element={<CMSProducts />} />,
       },
       {
         path: "products/new",
-        element: <ProductForm />,
+        element: <ProtectedRoute element={<ProductForm />} />,
       },
       {
         path: "products/view/:id",
-        element: <ProductView />,
+        element: <ProtectedRoute element={<ProductView />} />,
       },
       {
         path: "products/edit/:id",
-        element: <ProductForm />,
+        element: <ProtectedRoute element={<ProductForm />} />,
       },
       {
         path: "orders",
-        element: <CMSOrders />,
+        element: <ProtectedRoute element={<CMSOrders />} />,
       },
       {
         path: "orders/:id",
-        element: <div>Order Details (To be implemented)</div>,
+        element: (
+          <ProtectedRoute
+            element={<div>Order Details (To be implemented)</div>}
+          />
+        ),
       },
       {
         path: "customers",
-        element: <Customers />,
+        element: <ProtectedRoute element={<Customers />} />,
       },
       {
         path: "analytics",
-        element: <Analytics />,
+        element: <ProtectedRoute element={<Analytics />} />,
       },
       {
         path: "support",
-        element: <Support />,
+        element: <ProtectedRoute element={<Support />} />,
       },
       {
         path: "settings",
-        element: <Settings />,
+        element: <ProtectedRoute element={<Settings />} />,
       },
       {
         path: "promotions",
-        element: <Promotions />,
+        element: <ProtectedRoute element={<Promotions />} />,
       },
     ],
   },
@@ -230,7 +209,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </Provider>
   </React.StrictMode>
 );

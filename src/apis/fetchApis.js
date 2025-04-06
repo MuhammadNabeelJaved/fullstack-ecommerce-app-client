@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useAuth } from '../contextApi/context.jsx';
 
 const API_BASE_URL = 'http://localhost:3000/api/v1';
 
@@ -16,11 +17,11 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    
+
     // If error is 401 and not already retrying
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      
+
       try {
         // Attempt to refresh token
         await refreshAccessToken();
@@ -31,7 +32,7 @@ api.interceptors.response.use(
         return Promise.reject(refreshError);
       }
     }
-    
+
     return Promise.reject(error);
   }
 );
@@ -40,6 +41,7 @@ api.interceptors.response.use(
 export const registerUser = async (userData) => {
   try {
     const response = await api.post('/users/register', userData);
+    
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;
@@ -49,6 +51,8 @@ export const registerUser = async (userData) => {
 export const loginUser = async (credentials) => {
   try {
     const response = await api.post('/users/login', credentials);
+    // useAuth().login(response.data); // Store user data in context
+    useAuth().login(response.data); // Store user data in context
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;
@@ -249,7 +253,7 @@ const apiService = {
   verifyEmail,
   updateUserAvatar,
   updateUserPassword,
-  
+
   // Cart
   addToCart,
   getCartItems,
@@ -257,14 +261,14 @@ const apiService = {
   updateCartItemQuantity,
   removeCartItem,
   clearCart,
-  
+
   // Products
   createProduct,
   getProducts,
   getProductById,
   updateProduct,
   deleteProduct,
-  
+
   // Reviews
   createReview,
   getReviews,
