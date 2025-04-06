@@ -11,6 +11,15 @@ export const AuthProvider = ({ children }) => {
   // Check if user is already logged in
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+    const storedUserData = localStorage.getItem("user");
+    if (storedUser && accessToken && refreshToken) {
+      setUser(JSON.parse(storedUserData));
+      setUser(JSON.parse(storedUser));
+      setIsLoggedIn(true);
+    }
+
     if (storedUser) {
       setUser(JSON.parse(storedUser));
       setIsLoggedIn(true);
@@ -23,7 +32,20 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
     setIsLoggedIn(true);
     setLoading(false);
-    localStorage.setItem("user", JSON.stringify(userData));
+    console.log("Registered User data:", userData);
+    setCurrentUser(userData);
+    // localStorage.setItem("user", JSON.stringify(userData));
+  };
+  const verifyEmail = (userData) => {
+    if (!userData) return;
+    setLoading(true);
+    setUser(userData);
+    setIsLoggedIn(true);
+    setLoading(false);
+    console.log("Email verified:", userData);
+    setCurrentUser(userData);
+    localStorage.setItem("accessToken", JSON.stringify(userData.accessToken));
+    localStorage.setItem("refreshToken", JSON.stringify(userData.refreshToken));
   };
   const login = (userData) => {
     if (!userData) return;
@@ -31,7 +53,16 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(true);
     setUser(userData);
     setLoading(false);
-    localStorage.setItem("user", JSON.stringify(userData));
+    console.log("User data:", userData?.data);
+    setCurrentUser(userData);
+    localStorage.setItem(
+      "accessToken",
+      JSON.stringify(userData?.data?.accessToken)
+    );
+    localStorage.setItem(
+      "refreshToken",
+      JSON.stringify(userData?.data?.refreshToken)
+    );
   };
 
   const logout = () => {
@@ -41,7 +72,16 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, loading, currentUser, isLoggedIn }}
+      value={{
+        user,
+        login,
+        logout,
+        register,
+        verifyEmail,
+        loading,
+        currentUser,
+        isLoggedIn,
+      }}
     >
       {children}
     </AuthContext.Provider>

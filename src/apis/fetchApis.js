@@ -3,6 +3,7 @@ import { useAuth } from '../contextApi/context.jsx';
 
 const API_BASE_URL = 'http://localhost:3000/api/v1';
 
+
 // Create axios instance with default config
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -41,23 +42,24 @@ api.interceptors.response.use(
 export const registerUser = async (userData) => {
   try {
     const response = await api.post('/users/register', userData);
-    
+    useAuth().register(response.data); // Store user data in context
+    console.log('Registered User data:', response);
+    return response;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const loginUser = async (credentials, login) => {
+  try {
+    const response = await api.post('/users/login', credentials);
+    login(response.data); // Call the login function from context
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;
   }
 };
 
-export const loginUser = async (credentials) => {
-  try {
-    const response = await api.post('/users/login', credentials);
-    // useAuth().login(response.data); // Store user data in context
-    useAuth().login(response.data); // Store user data in context
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || error.message;
-  }
-};
 
 export const getCurrentUser = async () => {
   try {
@@ -89,7 +91,7 @@ export const refreshAccessToken = async () => {
 export const verifyEmail = async (verificationData) => {
   try {
     const response = await api.post('/users/verify-email', verificationData);
-    return response.data;
+    return response;
   } catch (error) {
     throw error.response?.data || error.message;
   }
