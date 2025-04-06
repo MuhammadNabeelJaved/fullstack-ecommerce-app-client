@@ -12,6 +12,7 @@ import {
 } from "../redux/features/searchSlice.js";
 import { Menu, X, ShoppingCart, Search, User, LogIn } from "lucide-react";
 import SearchResults from "./SearchResults.jsx";
+import { useAuth } from "../contextApi/context.jsx";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,6 +22,7 @@ const Navbar = () => {
   const searchQuery = useSelector(selectSearchQuery);
   const searchInputRef = useRef(null);
   const searchContainerRef = useRef(null);
+  const { user } = useAuth(); // Assuming you have a user context or state
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -131,28 +133,57 @@ const Navbar = () => {
                 <button className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 flex items-center">
                   <User className="h-5 w-5" />
                 </button>
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg overflow-hidden z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 origin-top-right transform scale-95 group-hover:scale-100">
-                  <div className="py-2">
-                    <Link
-                      to="/signin"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
-                    >
-                      Sign In
-                    </Link>
-                    <Link
-                      to="/signup"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
-                    >
-                      Sign Up
-                    </Link>
-                    <Link
-                      to="/account"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
-                    >
-                      My Account
-                    </Link>
-                  </div>
-                </div>
+                {user ? (
+                  <>
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg overflow-hidden z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 origin-top-right transform scale-95 group-hover:scale-100">
+                      <div className="py-2">
+                        <Link
+                          to="/signin"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                        >
+                          Sign In
+                        </Link>
+                        <Link
+                          to="/signup"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                        >
+                          Sign Up
+                        </Link>
+                        <Link
+                          to={`/dashboard/user/${user._id}`}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                        >
+                          My Account
+                        </Link>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg overflow-hidden z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 origin-top-right transform scale-95 group-hover:scale-100">
+                      <div className="py-2">
+                        <Link
+                          to="/signin"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                        >
+                          Sign In
+                        </Link>
+                        <Link
+                          to="/signup"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                        >
+                          Sign Up
+                        </Link>
+                        <Link
+                          to="/account"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+                        >
+                          My Account
+                        </Link>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
               <Link
                 to="/cart"

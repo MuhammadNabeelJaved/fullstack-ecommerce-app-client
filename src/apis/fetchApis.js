@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { useAuth } from '../contextApi/context.jsx';
+import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:3000/api/v1';
 
@@ -13,7 +13,6 @@ const api = axios.create({
   withCredentials: true, // Important for handling cookies (refresh tokens)
 });
 
-// Add interceptor for token refresh
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -25,9 +24,11 @@ api.interceptors.response.use(
 
       try {
         // Attempt to refresh token
-        await refreshAccessToken();
-        // Retry the original request
-        return api(originalRequest);
+        const refreshToken = localStorage.getItem("refreshToken");
+        const response = await refreshAccessToken(refreshToken);
+        localStorage.setItem("accessToken", response.accessToken); // Update access token in local storage
+        originalRequest.headers['Authorization'] = `Bearer ${response.accessToken}`;
+        return api(originalRequest); // Retry the original request
       } catch (refreshError) {
         // Redirect to login if refresh fails
         return Promise.reject(refreshError);
@@ -79,14 +80,18 @@ export const logoutUser = async () => {
   }
 };
 
-export const refreshAccessToken = async (accessToken, refreshToken) => {
+// Refresh access token function
+export const refreshAccessToken = async (refreshToken) => {
   try {
-    const response = await api.post('/users/refresh-access-token', refreshToken);
-    return response.data;
+    const response = await api.post('/users/refresh-access-token', { refreshToken });
+    return response.data; // Return new access token
   } catch (error) {
     throw error.response?.data || error.message;
   }
 };
+
+
+
 
 export const verifyEmail = async (verificationData) => {
   try {

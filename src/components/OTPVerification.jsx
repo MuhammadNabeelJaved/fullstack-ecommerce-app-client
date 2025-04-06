@@ -115,7 +115,7 @@ const OTPVerification = () => {
       return;
     }
 
-    verifyEmail(response); // Update user state in context
+    // verifyEmail(response); // Update user state in context
     console.log("OTP verification response:", response);
     user || currentUser ? navigate("/dashboard") : navigate("/signin"); // Redirect to dashboard or sign-in based on user state
 
