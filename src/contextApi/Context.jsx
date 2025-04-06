@@ -1,5 +1,6 @@
 import { useContext, useEffect } from "react";
 import { createContext, useState } from "react";
+import apiService from "../apis/fetchApis.js";
 
 const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
@@ -13,18 +14,17 @@ export const AuthProvider = ({ children }) => {
     const storedUser = localStorage.getItem("user");
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
-    const storedUserData = localStorage.getItem("user");
+  
     if (storedUser && accessToken && refreshToken) {
-      setUser(JSON.parse(storedUserData));
       setUser(JSON.parse(storedUser));
       setIsLoggedIn(true);
-    }
-
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setIsLoggedIn(true);
+      setLoading(false);
+    } else {
+      setIsLoggedIn(false);
+      setLoading(false);
     }
   }, []);
+  
 
   const register = async (userData) => {
     if (!userData) return;

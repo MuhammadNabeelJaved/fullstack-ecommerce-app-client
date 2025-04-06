@@ -95,7 +95,7 @@ const router = createBrowserRouter([
         element: <ProductView />,
       },
       {
-        path: "dashboard",
+        path: "dashboard/user/:id",
         element: <ProtectedRoute element={<DashboardLayout />} />,
         children: [
           {

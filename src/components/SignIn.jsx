@@ -9,7 +9,7 @@ import apiService from "../apis/fetchApis.js";
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login,isLoggedIn } = useAuth();
+  const { login, isLoggedIn, currentUser, user } = useAuth();
   const navigate = useNavigate();
 
   const {
@@ -28,14 +28,19 @@ const SignIn = () => {
     try {
       console.log("Form submitted:", data);
       const response = await apiService.loginUser(data, login); // Pass the login function
-      // Redirect or perform other actions after successful login
-      isLoggedIn&& navigate("/dashboard"); // Redirect to dashboard if logged in
+      if (!response) {
+        console.error("Login failed. No response received.");
+        return;
+      }
+      // Redirect to dashboard if logged in
+      navigate(`/dashboard/user/${response.data?.userData?._id}`);
     } catch (error) {
       console.error("Login error:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row pt-16">
