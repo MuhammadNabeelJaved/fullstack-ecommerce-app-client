@@ -40,7 +40,6 @@ import Analytics from "./components/cms/Analytics";
 import Settings from "./components/cms/Settings";
 import Promotions from "./components/cms/Promotions";
 
-
 const router = createBrowserRouter([
   {
     path: "/",

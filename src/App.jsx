@@ -17,13 +17,20 @@ function App() {
             console.error("Login failed. No response received.");
           }
           // Set user data in context
+          // setUser(response.data.userData || response.data);
+          localStorage.setItem("accessToken", response.data?.accessToken); // Update access token in local storage
+          localStorage.setItem("refreshToken", response.data?.refreshToken); // Update refresh token in local storage
           currentUser(response.data);
           user(response.data);
+          localStorage.setItem("accessToken", response.data?.accessToken); // Update access token in local storage
+          localStorage.setItem("refreshToken", response.data?.refreshToken); // Update refresh token in local storage
         })
         .catch((error) => {
           console.error("Error fetching current user:", error);
         });
     };
+
+    getUser();
   }, []);
 
   return (

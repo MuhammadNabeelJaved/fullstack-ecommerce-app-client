@@ -62,6 +62,7 @@ export const loginUser = async (credentials, login) => {
 };
 
 
+
 export const getCurrentUser = async () => {
   try {
     const response = await api.get('/users/current-user');
@@ -284,3 +285,121 @@ const apiService = {
 };
 
 export default apiService;
+
+
+
+// fetchApis.js - Improved version
+
+// import axios from 'axios';
+
+// // Create API instance with base URL
+// const api = axios.create({
+//   baseURL: API_BASE_URL || '/api',
+//   withCredentials: true, // Important for cookie handling
+//   headers: {
+//     'Content-Type': 'application/json',
+//   }
+// });
+
+// // Add request interceptor to attach the Authorization header
+// api.interceptors.request.use(
+//   (config) => {
+//     const accessToken = localStorage.getItem('accessToken');
+//     if (accessToken) {
+//       config.headers.Authorization = `Bearer ${accessToken}`;
+//     }
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
+
+// // Add response interceptor to handle token refresh
+// api.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+    
+//     // Only retry once to prevent infinite loops
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+      
+//       try {
+//         // Get the refresh token
+//         const refreshToken = localStorage.getItem("refreshToken");
+        
+//         if (!refreshToken) {
+//           // No refresh token available, can't retry
+//           throw new Error("No refresh token available");
+//         }
+        
+//         // Call refresh token endpoint
+//         const refreshResponse = await apiService.refreshAccessToken(refreshToken);
+        
+//         if (!refreshResponse?.data?.data?.accessToken) {
+//           throw new Error("Failed to refresh token");
+//         }
+        
+//         // Extract the new access token
+//         const newAccessToken = refreshResponse.data.data.accessToken;
+        
+//         // Update localStorage
+//         localStorage.setItem("accessToken", newAccessToken);
+        
+//         // Update the Authorization header and retry the request
+//         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+//         return api(originalRequest);
+//       } catch (refreshError) {
+//         console.error("Token refresh failed:", refreshError);
+        
+//         // Clear tokens and redirect to login
+//         localStorage.removeItem("accessToken");
+//         localStorage.removeItem("refreshToken");
+        
+//         return Promise.reject(refreshError);
+//       }
+//     }
+    
+//     return Promise.reject(error);
+//   }
+// );
+
+// // API service methods
+// const apiService = {
+//   // User authentication
+//   login: async (credentials) => {
+//     try {
+//       const response = await api.post('/users/login', credentials);
+//       return response;
+//     } catch (error) {
+//       console.error("Login error:", error);
+//       throw error;
+//     }
+//   },
+  
+//   // Get current user profile
+//   getCurrentUser: async () => {
+//     try {
+//       const response = await api.get('/users/current-user');
+//       return response;
+//     } catch (error) {
+//       console.error("Get current user error:", error);
+//       throw error;
+//     }
+//   },
+  
+//   // Refresh access token
+//   refreshAccessToken: async (refreshToken) => {
+//     try {
+//       // Make sure we're sending the refresh token in the expected format
+//       const response = await api.post('/users/refresh-access-token', { refreshToken });
+//       return response;
+//     } catch (error) {
+//       console.error("Refresh token error:", error);
+//       throw error;
+//     }
+//   },
+  
+//   // Other API methods...
+// };
+
+// export default apiService;
