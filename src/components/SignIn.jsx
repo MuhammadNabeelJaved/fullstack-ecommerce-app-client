@@ -12,6 +12,10 @@ const SignIn = () => {
   const { login, isLoggedIn, currentUser, user } = useAuth();
   const navigate = useNavigate();
 
+  if (user) {
+    navigate(`/dashboard/user/${user?._id}`);
+  }
+
   const {
     register,
     handleSubmit,
@@ -25,22 +29,22 @@ const SignIn = () => {
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
-    try {
-      console.log("Form submitted:", data);
-      const response = await apiService.loginUser(data, login); // Pass the login function
-      if (!response) {
-        console.error("Login failed. No response received.");
-        return;
-      }
-      // Redirect to dashboard if logged in
-      navigate(`/dashboard/user/${response.data?.userData?._id}`);
-    } catch (error) {
-      console.error("Login error:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    login(data.email, data.password); // Call the login function with email and password
+    // try {
+    //   console.log("Form submitted:", data);
+    //   const response = await apiService.loginUser(data, login); // Pass the login function
+    //   if (!response) {
+    //     console.error("Login failed. No response received.");
+    //     return;
+    //   }
+    //   // Redirect to dashboard if logged in
+    //   navigate(`/dashboard/user/${response.data?.userData?._id}`);
+    // } catch (error) {
+    //   console.error("Login error:", error);
+    // } finally {
+    //   setIsSubmitting(false);
+    // }
   };
-  
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row pt-16">
