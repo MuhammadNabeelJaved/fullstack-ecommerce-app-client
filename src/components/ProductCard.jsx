@@ -1,23 +1,34 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router';
-import { motion, AnimatePresence } from 'framer-motion';
-import { addToCart, selectCartItems } from '../redux/features/cartSlice';
-import { 
-  RiShoppingCart2Line, 
-  RiStarFill, 
-  RiHeartLine, 
-  RiHeartFill, 
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router";
+import { motion, AnimatePresence } from "framer-motion";
+import { addToCart, selectCartItems } from "../redux/features/cartSlice";
+import {
+  RiShoppingCart2Line,
+  RiStarFill,
+  RiHeartLine,
+  RiHeartFill,
   RiEyeLine,
-  RiCheckLine
-} from 'react-icons/ri';
+  RiCheckLine,
+} from "react-icons/ri";
+import apiService from "../apis/fetchApis.js";
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
-  const isInCart = cartItems.some(item => item.id === product.id);
+  console.log("Cart Items is:",cartItems);
+  const productId = cartItems.map(item => item.id)
+  const quantity = cartItems.map(item => item.quantity)
+  const cartData = {
+    productId: productId,
+    quantity: quantity
+  }
+  const isInCart = cartItems.some((item) => item.id === product.id);
   const [isWishListed, setIsWishListed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const { addToCartItem } = apiService;
+
+  addToCartItem(cartData)
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -47,7 +58,7 @@ const ProductCard = ({ product }) => {
             {/* Tags Section */}
             <div className="absolute z-10 top-3 left-3 flex flex-col gap-2">
               {product.tag && (
-                <motion.span 
+                <motion.span
                   className="bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-xs py-1.5 px-3 rounded-full font-medium"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -56,9 +67,9 @@ const ProductCard = ({ product }) => {
                   {product.tag}
                 </motion.span>
               )}
-              
+
               {product.offer && (
-                <motion.span 
+                <motion.span
                   className="bg-gradient-to-r from-green-600 to-green-500 text-white text-xs py-1.5 px-3 rounded-full font-medium"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -68,7 +79,7 @@ const ProductCard = ({ product }) => {
                 </motion.span>
               )}
             </div>
-            
+
             {/* Wishlist Button */}
             <motion.button
               whileHover={{ scale: 1.1 }}
@@ -82,7 +93,7 @@ const ProductCard = ({ product }) => {
                 <RiHeartLine className="text-gray-700 text-lg" />
               )}
             </motion.button>
-            
+
             {/* Product Image with Overlay */}
             <div className="w-full h-full relative">
               <motion.img
@@ -92,26 +103,26 @@ const ProductCard = ({ product }) => {
                 whileHover={{ scale: 1.07 }}
                 transition={{ duration: 0.5 }}
               />
-              
-              <motion.div 
-                className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" 
+
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isHovered ? 1 : 0 }}
                 transition={{ duration: 0.3 }}
               />
             </div>
-            
+
             {/* Quick Actions Buttons */}
             <AnimatePresence>
               {isHovered && (
-                <motion.div 
+                <motion.div
                   className="absolute bottom-0 left-0 w-full p-4 flex justify-center items-center"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <motion.div 
+                  <motion.div
                     className="flex items-center gap-3"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -132,8 +143,11 @@ const ProductCard = ({ product }) => {
                         <RiShoppingCart2Line className="text-lg" />
                       )}
                     </motion.button>
-                    
-                    <Link to={`/product/view/${product.id}`} onClick={(e) => e.stopPropagation()}>
+
+                    <Link
+                      to={`/product/view/${product.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
@@ -159,14 +173,18 @@ const ProductCard = ({ product }) => {
                   {product.name}
                 </h3>
               </div>
-              
+
               {/* Rating */}
               <div className="flex items-center mb-3">
                 <div className="flex items-center text-yellow-400">
                   {[...Array(5)].map((_, index) => (
                     <RiStarFill
                       key={index}
-                      className={`${index < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'} 
+                      className={`${
+                        index < Math.floor(product.rating)
+                          ? "text-yellow-400"
+                          : "text-gray-300"
+                      } 
                                 mr-0.5 text-sm`}
                     />
                   ))}
@@ -175,7 +193,7 @@ const ProductCard = ({ product }) => {
                   ({product.reviews})
                 </span>
               </div>
-              
+
               {/* Short Description - hidden on small screens */}
               <p className="text-gray-600 text-sm mb-4 line-clamp-2 hidden sm:block">
                 {product.description?.substring(0, 80)}...
@@ -185,20 +203,24 @@ const ProductCard = ({ product }) => {
             {/* Price and Add to Cart Section */}
             <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
               <div className="flex flex-col">
-                <span className="text-xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
+                <span className="text-xl font-bold text-gray-900">
+                  ${product.price.toFixed(2)}
+                </span>
                 {product.oldPrice && (
-                  <span className="text-sm text-gray-500 line-through">${product.oldPrice.toFixed(2)}</span>
+                  <span className="text-sm text-gray-500 line-through">
+                    ${product.oldPrice.toFixed(2)}
+                  </span>
                 )}
               </div>
-              
+
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleAddToCart}
                 className={`p-2.5 rounded-lg flex items-center justify-center transition-all duration-300 shadow-sm ${
                   isInCart
-                    ? 'bg-green-500 text-white hover:bg-green-600'
-                    : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                    ? "bg-green-500 text-white hover:bg-green-600"
+                    : "bg-indigo-600 text-white hover:bg-indigo-700"
                 }`}
               >
                 {isInCart ? (
@@ -215,4 +237,4 @@ const ProductCard = ({ product }) => {
   );
 };
 
-export default ProductCard; 
+export default ProductCard;

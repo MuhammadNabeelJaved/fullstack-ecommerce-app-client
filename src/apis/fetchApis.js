@@ -123,7 +123,7 @@ export const updateUserPassword = async (passwordData) => {
 };
 
 // Cart APIs
-export const addToCart = async (cartItemData) => {
+export const addToCartItem = async (cartItemData) => {
   try {
     const response = await api.post('/cart/add-to-cart', cartItemData);
     return response.data;
@@ -264,7 +264,7 @@ const apiService = {
   updateUserPassword,
 
   // Cart
-  addToCart,
+  addToCartItem,
   getCartItems,
   getCartTotalPrice,
   updateCartItemQuantity,
