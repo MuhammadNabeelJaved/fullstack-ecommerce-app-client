@@ -1,35 +1,49 @@
-import React, { useState } from 'react';
-import { Facebook, Twitter, Instagram, Mail, MapPin, Phone, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router';
+import React, { useState } from "react";
+import {
+  Facebook,
+  Twitter,
+  Instagram,
+  Mail,
+  MapPin,
+  Phone,
+  ArrowRight,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router";
+import { useAuth } from "../contextApi/context.jsx";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
-  
+  const { user } = useAuth(); // Assuming you have a user context to check if the user is logged in
+  const navigate = useNavigate(); // Hook to programmatically navigate
+
   const handleSubscribe = (e) => {
     e.preventDefault();
-    if (email.trim() !== '') {
+    if (!user) {
+      navigate("/signin"); // Redirect to login if not logged in
+    }
+    if (email.trim() !== "") {
       // In a real app, you would submit this to your backend
-      console.log('Subscribed with email:', email);
+      console.log("Subscribed with email:", email);
       setIsSubscribed(true);
-      setEmail('');
+      setEmail("");
       // Reset after 3 seconds
       setTimeout(() => setIsSubscribed(false), 3000);
     }
   };
-  
+
   // This would normally use NavLink, but for demonstration purposes
   // we're using regular links that would be replaced with NavLink in your app
   const FooterLink = ({ to, children }) => (
-    <Link 
-      to={to} 
+    <Link
+      to={to}
       className="text-gray-600 hover:text-indigo-600 transition-colors duration-300"
     >
       {children}
     </Link>
   );
-  
+
   return (
     <footer className="bg-gray-100 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -38,16 +52,27 @@ const Footer = () => {
           <div className="space-y-4">
             <h2 className="text-xl font-bold text-indigo-600">ShopNow</h2>
             <p className="text-gray-600">
-              Your one-stop destination for quality products at affordable prices. Shop with confidence and enjoy a seamless shopping experience.
+              Your one-stop destination for quality products at affordable
+              prices. Shop with confidence and enjoy a seamless shopping
+              experience.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-500 hover:text-indigo-600 transition-colors duration-300">
+              <a
+                href="#"
+                className="text-gray-500 hover:text-indigo-600 transition-colors duration-300"
+              >
                 <Facebook size={20} />
               </a>
-              <a href="#" className="text-gray-500 hover:text-indigo-600 transition-colors duration-300">
+              <a
+                href="#"
+                className="text-gray-500 hover:text-indigo-600 transition-colors duration-300"
+              >
                 <Twitter size={20} />
               </a>
-              <a href="#" className="text-gray-500 hover:text-indigo-600 transition-colors duration-300">
+              <a
+                href="#"
+                className="text-gray-500 hover:text-indigo-600 transition-colors duration-300"
+              >
                 <Instagram size={20} />
               </a>
             </div>
@@ -77,7 +102,9 @@ const Footer = () => {
 
           {/* Customer Service */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800">Customer Service</h3>
+            <h3 className="text-lg font-semibold text-gray-800">
+              Customer Service
+            </h3>
             <ul className="space-y-2">
               <li>
                 <FooterLink to="/contact">Contact Us</FooterLink>
@@ -96,7 +123,10 @@ const Footer = () => {
             <h3 className="text-lg font-semibold text-gray-800">Contact Us</h3>
             <ul className="space-y-3">
               <li className="flex items-start space-x-3">
-                <MapPin size={20} className="text-indigo-600 flex-shrink-0 mt-1" />
+                <MapPin
+                  size={20}
+                  className="text-indigo-600 flex-shrink-0 mt-1"
+                />
                 <span className="text-gray-600">
                   123 Shopping Street, Retail District, Fashion City, FC 12345
                 </span>
@@ -116,14 +146,19 @@ const Footer = () => {
         {/* Newsletter */}
         <div className="mt-12 pt-8 border-t border-gray-200">
           <div className="max-w-md mx-auto">
-            <h3 className="text-lg font-semibold text-gray-800 text-center mb-4">Subscribe to Our Newsletter</h3>
-            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row">
+            <h3 className="text-lg font-semibold text-gray-800 text-center mb-4">
+              Subscribe to Our Newsletter
+            </h3>
+            <form
+              onSubmit={handleSubscribe}
+              className="flex flex-col sm:flex-row"
+            >
               <div className="relative flex-grow">
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email address" 
+                  placeholder="Your email address"
                   className="w-full px-4 py-3 rounded-lg sm:rounded-r-none border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   required
                 />
@@ -133,9 +168,9 @@ const Footer = () => {
                   </div>
                 )}
               </div>
-              <button 
-                type="submit" 
-                className="mt-2 sm:mt-0 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg sm:rounded-l-none transition-colors duration-300 flex items-center justify-center"
+              <button
+                type="submit"
+                className="mt-2 sm:mt-0 cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg sm:rounded-l-none transition-colors duration-300 flex items-center justify-center"
               >
                 Subscribe <ArrowRight size={16} className="ml-2" />
               </button>
