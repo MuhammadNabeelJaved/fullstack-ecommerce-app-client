@@ -19,6 +19,7 @@ import {
   RiCloseLine,
   RiArrowRightSLine,
 } from 'react-icons/ri';
+import { useAuth } from '../../contextApi/context.jsx';
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -26,6 +27,7 @@ const DashboardLayout = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const location = useLocation();
+  const { user } = useAuth(); // Assuming you have a user context
 
   // Automatically close sidebar on small screens
   useEffect(() => {
@@ -176,8 +178,8 @@ const DashboardLayout = () => {
                       <span className="text-sm font-medium">JD</span>
                     </div>
                     <div>
-                      <p className="font-medium">John Doe</p>
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>john.doe@example.com</p>
+                      <p className="font-medium">{user.name}</p>
+                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{user.email}</p>
                     </div>
                   </div>
                   
@@ -405,8 +407,8 @@ const DashboardLayout = () => {
                     <span className="text-sm font-medium">JD</span>
                   </div>
                   <div className="hidden md:block">
-                    <p className="font-medium leading-tight">John Doe</p>
-                    <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>john.doe@example.com</p>
+                    <p className="font-medium leading-tight">{user.name}</p>
+                    <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{user.email}</p>
                   </div>
                 </div>
                 

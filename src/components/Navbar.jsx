@@ -41,6 +41,11 @@ const Navbar = () => {
     }
   };
 
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+  };
+
   const handleSearchChange = (e) => {
     dispatch(setSearchQuery(e.target.value));
   };
@@ -130,24 +135,27 @@ const Navbar = () => {
                 />
               </div>
               <div className="relative group">
-                <button className="p-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 flex items-center">
-                  <User className="h-5 w-5" />
+                <button className="p-2 cursor-pointer text-gray-600 hover:text-indigo-600 transition-colors duration-200 flex items-center">
+                  {user ? (
+                    <img
+                      className="h-8 w-8 rounded-full object-center center"
+                      src={user?.avatar}
+                      alt=""
+                    />
+                  ) : (
+                    <User className="h-5 w-5" />
+                  )}
                 </button>
-                {user ? (
-                  <>
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg overflow-hidden z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 origin-top-right transform scale-95 group-hover:scale-100">
-                      <div className="py-2">
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg overflow-hidden z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 origin-top-right transform scale-95 group-hover:scale-100">
+                  <div className="py-2">
+                    {user ? (
+                      <>
                         <Link
                           to="/signin"
+                          onClick={logout}
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
                         >
-                          Sign In
-                        </Link>
-                        <Link
-                          to="/signup"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
-                        >
-                          Sign Up
+                          Sign Out
                         </Link>
                         <Link
                           to={`/dashboard/user/${user._id}`}
@@ -155,13 +163,9 @@ const Navbar = () => {
                         >
                           My Account
                         </Link>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg overflow-hidden z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 origin-top-right transform scale-95 group-hover:scale-100">
-                      <div className="py-2">
+                      </>
+                    ) : (
+                      <>
                         <Link
                           to="/signin"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
@@ -174,16 +178,10 @@ const Navbar = () => {
                         >
                           Sign Up
                         </Link>
-                        <Link
-                          to="/account"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
-                        >
-                          My Account
-                        </Link>
-                      </div>
-                    </div>
-                  </>
-                )}
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
               <Link
                 to="/cart"
@@ -290,3 +288,72 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+// import React from "react";
+// import { Link } from "react-router";
+// import { User } from "lucide-react";
+// import { useAuth } from "../contextApi/context.jsx";
+
+// const Navbar = () => {
+//   const { user } = useAuth(); // Assuming you have a user context or state
+
+//   return (
+//     <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
+//       {/* Other navbar content */}
+
+//       <div className="flex items-center">
+//         <div className="relative group">
+//           <button className="p-2 cursor-pointer text-gray-600 hover:text-indigo-600 transition-colors duration-200 flex items-center">
+//             {user ? (
+//               <img
+//                 className="h-8 w-8 rounded-full object-center center"
+//                 src={user?.avatar}
+//                 alt=""
+//               />
+//             ) : (
+//               <User className="h-5 w-5" />
+//             )}
+//           </button>
+//           <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg overflow-hidden z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 origin-top-right transform scale-95 group-hover:scale-100">
+//             <div className="py-2">
+//               {user ? (
+//                 <>
+//                   <Link
+//                     to="/signin"
+//                     onClick={logout}
+//                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+//                   >
+//                     Sign Out
+//                   </Link>
+//                   <Link
+//                     to={`/dashboard/user/${user._id}`}
+//                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+//                   >
+//                     My Account
+//                   </Link>
+//                 </>
+//               ) : (
+//                 <>
+//                   <Link
+//                     to="/signin"
+//                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+//                   >
+//                     Sign In
+//                   </Link>
+//                   <Link
+//                     to="/signup"
+//                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+//                   >
+//                     Sign Up
+//                   </Link>
+//                 </>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </nav>
+//   );
+// };
+
+// export default Navbar;
