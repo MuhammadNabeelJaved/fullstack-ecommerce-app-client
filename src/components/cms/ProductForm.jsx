@@ -29,7 +29,8 @@ const ProductForm = () => {
     name: "",
     description: "",
     price: 0,
-    quantity: 0,
+    category: "",
+    stock: 0,
     image: [],
   });
 
