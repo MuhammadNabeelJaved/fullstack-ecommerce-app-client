@@ -217,7 +217,7 @@ export const updateProduct = async (productId, productData) => {
 
 export const deleteProduct = async (productId) => {
   try {
-    const response = await api.delete(`/products/${productId}`);
+    const response = await axios.delete(`http://localhost:3000/api/v1/products/${productId}`);
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
 import {
@@ -21,35 +21,63 @@ import products from "../../data/products.data.js";
 import apiService from "../../apis/fetchApis.js";
 
 const Products = () => {
-  const { getProducts } = apiService;
+  const { getProducts, deleteProduct } = apiService;
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState("grid");
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [sortField, setSortField] = useState("name");
   const [sortDirection, setSortDirection] = useState("asc");
-  // State for storing fetched products
-  // const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetched all products data 
-  const productResponse = getProducts()
-    .then((res) => {
-      console.log("Getting all products:", res.data);
+  // State for storing fetched products
+  const [products, setProducts] = useState([]);
+
+  const images = products.map((product) => product.images);
+
+  const imageUrl = images.map((image) =>
+    image.map((image, index) => {
+      console.log(" First image:", image.url);
     })
-    .catch((error) => {
-      console.log(error);
-    });
+  );
 
   // Filter states
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [stockFilter, setStockFilter] = useState("all");
   const [priceRange, setPriceRange] = useState([0, 1000]);
 
+  // Fetch products on component mount
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // Function to fetch products
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const response = await getProducts();
+      console.log("Fetched products:", response);
+
+      // Assuming the API returns data in an object with a data property
+      if (response && response.data) {
+        setProducts(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setError("Failed to load products. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const categories = [
-    "Electronics",
-    "Accessories",
-    "Clothing",
-    "Home & Kitchen",
+    "electronics",
+    "fashion",
+    "home",
+    "sports",
+    "books",
+    "other",
   ];
 
   // Handle sort toggle
@@ -76,21 +104,32 @@ const Products = () => {
     if (selectedProducts.length === filteredProducts.length) {
       setSelectedProducts([]);
     } else {
-      setSelectedProducts(filteredProducts.map((product) => product.id));
+      setSelectedProducts(filteredProducts.map((product) => product._id));
     }
+  };
+
+  const handleDeleteProduct = (productId) => {
+    console.log("Deleting product with ID:", productId);
+    deleteProduct(productId)
+      .then(() => {
+        console.log("Product deleted successfully.");
+        fetchProducts();
+      })
+      .catch((error) => {
+        console.error("Error deleting product:", error);
+      });
+    setSelectedProducts(selectedProducts.filter((id) => id !== productId));
   };
 
   // Filter and sort products
   let filteredProducts = [...products];
 
-  console.log("filteredProducts", filteredProducts);
+  console.log("Filtered products:", filteredProducts);
 
   // Apply search filter
   if (searchTerm) {
-    filteredProducts = filteredProducts.filter(
-      (product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.sku.toLowerCase().includes(searchTerm.toLowerCase())
+    filteredProducts = filteredProducts.filter((product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }
 
@@ -503,7 +542,18 @@ const Products = () => {
               >
                 <div className="relative">
                   <img
-                    src={product.image}
+                    src={
+                      // Check for various possible image field structures
+                      Array.isArray(product.images) && product.images.length > 0
+                        ? product.images[0].url || product.images[0] // If first element is an object with url or direct URL
+                        : product.images?.url || // If images is an object with url property
+                          product.image?.url || // If image is an object with url property
+                          (Array.isArray(product.image) &&
+                          product.image.length > 0
+                            ? product.image[0].url || product.image[0] // If image is array
+                            : product.image) || // If image is a direct URL
+                          "https://via.placeholder.com/300" // Fallback
+                    }
                     alt={product.name}
                     className="w-full h-48 object-cover"
                   />
@@ -574,7 +624,7 @@ const Products = () => {
                       Edit
                     </Link>
                     <button
-                      onClick={() => {}}
+                      onClick={() => handleDeleteProduct(product._id)}
                       className="inline-flex items-center px-2 py-1 border border-transparent shadow-sm text-xs font-medium rounded text-white bg-red-600 hover:bg-red-700 focus:outline-none"
                     >
                       <Trash2 className="h-3 w-3" />
