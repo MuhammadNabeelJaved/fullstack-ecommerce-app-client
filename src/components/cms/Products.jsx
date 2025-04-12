@@ -18,14 +18,27 @@ import {
   XCircle,
 } from "lucide-react";
 import products from "../../data/products.data.js";
+import apiService from "../../apis/fetchApis.js";
 
 const Products = () => {
+  const { getProducts } = apiService;
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
   const [viewMode, setViewMode] = useState("grid");
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [sortField, setSortField] = useState("name");
   const [sortDirection, setSortDirection] = useState("asc");
+  // State for storing fetched products
+  // const [products, setProducts] = useState([]);
+
+  // Fetched all products data 
+  const productResponse = getProducts()
+    .then((res) => {
+      console.log("Getting all products:", res.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 
   // Filter states
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -69,6 +82,8 @@ const Products = () => {
 
   // Filter and sort products
   let filteredProducts = [...products];
+
+  console.log("filteredProducts", filteredProducts);
 
   // Apply search filter
   if (searchTerm) {

@@ -188,9 +188,9 @@ export const createProduct = async (productData) => {
   }
 };
 
-export const getProducts = async (queryParams = {}) => {
+export const getProducts = async () => {
   try {
-    const response = await api.get('/products', { params: queryParams });
+    const response = await axios.get(`http://localhost:3000/api/v1/products`);
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;
