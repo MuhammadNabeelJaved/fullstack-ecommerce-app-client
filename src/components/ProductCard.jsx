@@ -28,7 +28,7 @@ const ProductCard = ({ product }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { addToCartItem } = apiService;
 
-  addToCartItem(cartData)
+  // addToCartItem(cartData)
 
   const handleAddToCart = (e) => {
     e.preventDefault();

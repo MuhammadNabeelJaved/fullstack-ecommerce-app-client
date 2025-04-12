@@ -4,7 +4,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import "./index.css";
-import { useAuth, AuthProvider } from "./contextApi/context.jsx";
+import { useAuth, AuthProvider } from "./contextApi/Context.jsx";
 import ProtectedRoute from "./contextApi/ProtectedRoutes.jsx";
 import App from "./App.jsx";
 import Layout from "./layout/Layout.jsx";
@@ -143,63 +143,59 @@ const router = createBrowserRouter([
   },
   {
     path: "/cms",
-    element: <ProtectedRoute element={<CMSLayout />} />,
+    element: <CMSLayout />,
     children: [
       {
         index: true,
-        element: <ProtectedRoute element={<CMSDashboard />} />,
+        element: <CMSDashboard />,
       },
       {
         path: "dashboard",
-        element: <ProtectedRoute element={<CMSDashboard />} />,
+        element: <CMSDashboard />,
       },
       {
         path: "products",
-        element: <ProtectedRoute element={<CMSProducts />} />,
+        element: <CMSProducts />,
       },
       {
         path: "products/new",
-        element: <ProtectedRoute element={<ProductForm />} />,
+        element: <ProductForm />,
       },
       {
         path: "products/view/:id",
-        element: <ProtectedRoute element={<ProductView />} />,
+        element: <ProductView />,
       },
       {
         path: "products/edit/:id",
-        element: <ProtectedRoute element={<ProductForm />} />,
+        element: <ProductForm />,
       },
       {
         path: "orders",
-        element: <ProtectedRoute element={<CMSOrders />} />,
+        element: <CMSOrders />,
       },
       {
         path: "orders/:id",
-        element: (
-          <ProtectedRoute
-            element={<div>Order Details (To be implemented)</div>}
-          />
-        ),
+        element: <div>Order Details (To be implemented)</div>,
       },
       {
         path: "customers",
-        element: <ProtectedRoute element={<Customers />} />,
+        element: <Customers />,
       },
       {
         path: "analytics",
-        element: <ProtectedRoute element={<Analytics />} />,
+        element: <Analytics />,
       },
       {
         path: "support",
-        element: <ProtectedRoute element={<Support />} />,
+        element: <Support />,
       },
       {
         path: "settings",
-        element: <ProtectedRoute element={<Settings />} />,
+        element: <Settings />,
       },
       {
         path: "promotions",
-        element: <ProtectedRoute element={<Promotions />} />,
+        element: <Promotions />,
       },
     ],
   },

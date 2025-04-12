@@ -12,7 +12,7 @@ import {
   RiTruckLine,
   RiCheckboxCircleLine,
 } from "react-icons/ri";
-import { useAuth } from "../../contextApi/context.jsx";
+import { useAuth } from "../../contextApi/Context.jsx";
 
 const Dashboard = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
