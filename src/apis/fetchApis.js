@@ -180,7 +180,8 @@ export const clearCart = async () => {
 // Product APIs
 export const createProduct = async (productData) => {
   try {
-    const response = await api.post('/products/create-product', productData);
+    console.log("Product data:", productData);
+    const response = await axios.post(`http://localhost:3000/api/v1/products/create-product`, productData); 
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;
