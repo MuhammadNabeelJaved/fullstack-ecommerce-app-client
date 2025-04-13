@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
@@ -16,24 +16,35 @@ import apiService from "../apis/fetchApis.js";
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
-  console.log("Cart Items is:",cartItems);
-  const productId = cartItems.map(item => item.id)
-  const quantity = cartItems.map(item => item.quantity)
+  console.log("Cart Items is:", cartItems);
+  const productId = cartItems.map((item) => item.id);
+  const quantity = cartItems.map((item) => item.quantity);
   const cartData = {
     productId: productId,
-    quantity: quantity
-  }
+    quantity: quantity,
+  };
   const isInCart = cartItems.some((item) => item.id === product.id);
   const [isWishListed, setIsWishListed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const { addToCartItem } = apiService;
 
+  console.log("Cart item is", cartItems);
+
   // addToCartItem(cartData)
 
-  const handleAddToCart = (e) => {
+  // useEffect(() => {
+  //   const addToCart = async () => {
+  //
+  //   };
+  // }, []);
+
+  const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     dispatch(addToCart(product));
+    await addToCartItem({cartData}).then((response) => {
+      console.log("Added to cart", response);
+    });
   };
 
   const toggleWishlist = (e) => {
@@ -145,7 +156,7 @@ const ProductCard = ({ product }) => {
                     </motion.button>
 
                     <Link
-                      to={`/product/view/${product.id}`}
+                      to={`/product/view/${product._id}`}
                       onClick={(e) => e.stopPropagation()}
                     >
                       <motion.button

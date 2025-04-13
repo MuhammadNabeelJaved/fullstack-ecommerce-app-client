@@ -125,10 +125,10 @@ export const updateUserPassword = async (passwordData) => {
 // Cart APIs
 export const addToCartItem = async (cartItemData) => {
   try {
-    const response = await api.post('/cart/add-to-cart', cartItemData);
+    const response = await axios.post(`http://localhost:3000/api/v1/cart/add-to-cart`, cartItemData);
     return response.data;
   } catch (error) {
-    throw error.response?.data || error.message;
+    throw error;
   }
 };
 
