@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 import {
   Search,
   Filter,
@@ -114,9 +115,31 @@ const Products = () => {
       .then(() => {
         console.log("Product deleted successfully.");
         fetchProducts();
+        toast.success("Product deleted successfully.", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       })
       .catch((error) => {
         console.error("Error deleting product:", error);
+        toast.error(error.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       });
     setSelectedProducts(selectedProducts.filter((id) => id !== productId));
   };
@@ -175,6 +198,7 @@ const Products = () => {
 
   return (
     <div className="space-y-6">
+      <ToastContainer />
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>

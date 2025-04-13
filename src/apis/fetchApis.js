@@ -230,7 +230,7 @@ export const createReview = async (reviewData) => {
     const response = await api.post('/reviews/create-review', reviewData);
     return response.data;
   } catch (error) {
-    throw error.response?.data || error.message;
+    throw error;
   }
 };
 

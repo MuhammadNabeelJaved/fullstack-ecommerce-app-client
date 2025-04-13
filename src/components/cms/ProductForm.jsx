@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate, Link } from "react-router";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 import {
   Save,
   X,
@@ -42,7 +43,7 @@ const ProductForm = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState("");
-  const [image, setImage] = useState(null)
+  const [image, setImage] = useState(null);
 
   const [productData, setProductData] = useState({
     name: "",
@@ -108,38 +109,63 @@ const ProductForm = () => {
 
   // Form submission handler
   // Form submission handler
-const onSubmit = async (data) => {
-  setProductData(data);
-  try {
-    // Create FormData object to handle file upload
-    const formData = new FormData();
-    
-    // Add text fields
-    formData.append("name", data.name);
-    formData.append("description", data.description);
-    formData.append("price", data.price);
-    formData.append("category", data.category);
-    formData.append("stock", data.stock);
-    formData.append("tags", JSON.stringify(tags));
-    
-    // Add image if it exists
-    if (data.image) {
-      formData.append("image", data.image);
-    } else {
-      alert("Please select an image");
-      return;
-    }
-    
-    // Submit the form data using apiService
-    const response = await createProduct(formData||productData); // Use formData, not productData
-    // const response = await axios.post(`http://localhost:3000/api/v1/products/create-product`, formData); 
-    console.log("Product created successfully:", response);
-    // navigate("/cms/products");
-  } catch (error) {
-    console.error("Error creating product:", error);
-  }
-};
+  const onSubmit = async (data) => {
+    setProductData(data);
+    try {
+      // Create FormData object to handle file upload
+      const formData = new FormData();
 
+      // Add text fields
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      formData.append("price", data.price);
+      formData.append("category", data.category);
+      formData.append("stock", data.stock);
+      formData.append("tags", JSON.stringify(tags));
+
+      // Add image if it exists
+      if (data.image) {
+        formData.append("image", data.image);
+      } else {
+        alert("Please select an image");
+        return;
+      }
+
+      // Submit the form data using apiService
+      const response = await createProduct(formData || productData); // Use formData, not productData
+      // const response = await axios.post(`http://localhost:3000/api/v1/products/create-product`, formData);
+      console.log("Product created successfully:", response);
+      toast.success(response.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+        });
+      // navigate("/cms/products");
+    } catch (error) {
+      console.error("Error creating product:", error);
+      toast(error.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+
+      if (error) {
+        return <ToastContainer />;
+      }
+    }
+  };
 
   // Handle stock increment/decrement
   const incrementStock = () => {
@@ -157,6 +183,7 @@ const onSubmit = async (data) => {
   return (
     <div>
       {/* Header */}
+      <ToastContainer />
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center">
           <Link
@@ -216,7 +243,12 @@ const onSubmit = async (data) => {
         </div>
       )}
 
-      <form id="product-form" onSubmit={handleSubmit(onSubmit)} method="post" enctype="multipart/form-data">
+      <form
+        id="product-form"
+        onSubmit={handleSubmit(onSubmit)}
+        method="post"
+        enctype="multipart/form-data"
+      >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main product info */}
           <div className="lg:col-span-2 space-y-6">
