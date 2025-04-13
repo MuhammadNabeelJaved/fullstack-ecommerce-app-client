@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart, selectCartItems } from "../redux/features/cartSlice";
 import products from "../data/products.data.js";
 import { getProducts } from "../apis/fetchApis.js";
+import { get } from "react-hook-form";
 
 const ProductView = () => {
   const [selectedColor, setSelectedColor] = useState("red");
@@ -26,25 +27,33 @@ const ProductView = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const isInCart = cartItems.some((item) => item.id === parseInt(id));
 
-  console.log("Single product is:", product);
+  console.log("Single product is:", product.images);
+  // Extract and set the images array
+  let image;
+  if (product && product.images && Array.isArray(product.images)) {
+    image = product.images.map((image) => image.url);
+    console.log("Product images:", image);
+  }
 
   if (!product) {
     return <div>Product not found</div>;
   }
-
+  // Add a dependency array to your useEffect to control when it runs
   useEffect(() => {
     const getAllProducts = async () => {
-      const productData = await getProducts();
-
-      const product = productData?.data.find(
-        (product) => product.id === parseInt(id)
-      );
-
-      setProduct(product);
+      try {
+        const response = await getProducts();
+        const productData = response?.data.find(
+          (product) => product._id === id
+        );
+        setProduct(productData);
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
     };
 
     getAllProducts();
-  }, []);
+  }, [id]); // Only run when the id changes
 
   // Set default image when product changes
   useEffect(() => {
@@ -139,7 +148,7 @@ const ProductView = () => {
         <div className="space-y-3 sm:space-y-4">
           <div className="aspect-w-1 aspect-h-1 overflow-hidden h-80 bg-gray-100 rounded-xl sm:rounded-2xl">
             <motion.img
-              src={selectedImage}
+              src={image}
               alt={product.name}
               className="w-full h-full object-cover object-center"
               whileHover={{ scale: 1.05 }}

@@ -51,7 +51,7 @@ const ProductCard = ({ product }) => {
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
-      <Link to={`/product/view/${product.id}`}>
+      <Link to={`/product/view/${product._id}`}>
         <div className="bg-white rounded-xl overflow-hidden h-full flex flex-col shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100">
           {/* Product Image Section */}
           <div className="relative overflow-hidden aspect-[4/3]">
