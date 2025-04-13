@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router";
-import { Star, Minus, Plus, Truck, RotateCcw, ShoppingCart, Check } from "lucide-react";
+import {
+  Star,
+  Minus,
+  Plus,
+  Truck,
+  RotateCcw,
+  ShoppingCart,
+  Check,
+} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, selectCartItems } from "../redux/features/cartSlice";
 import products from "../data/products.data.js";
+import { getProducts } from "../apis/fetchApis.js";
 
 const ProductView = () => {
   const [selectedColor, setSelectedColor] = useState("red");
@@ -13,15 +22,29 @@ const ProductView = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
-  const product = products.find((product) => product.id === parseInt(id));
+  const [product, setProduct] = useState([]);
   const [selectedImage, setSelectedImage] = useState("");
-  const isInCart = cartItems.some(item => item.id === parseInt(id));
+  const isInCart = cartItems.some((item) => item.id === parseInt(id));
 
   console.log("Single product is:", product);
 
   if (!product) {
     return <div>Product not found</div>;
   }
+
+  useEffect(() => {
+    const getAllProducts = async () => {
+      const productData = await getProducts();
+
+      const product = productData?.data.find(
+        (product) => product.id === parseInt(id)
+      );
+
+      setProduct(product);
+    };
+
+    getAllProducts();
+  }, []);
 
   // Set default image when product changes
   useEffect(() => {
@@ -100,11 +123,13 @@ const ProductView = () => {
   };
 
   const handleAddToCart = () => {
-    dispatch(addToCart({
-      ...product,
-      color: selectedColor,
-      quantity: quantity
-    }));
+    dispatch(
+      addToCart({
+        ...product,
+        color: selectedColor,
+        quantity: quantity,
+      })
+    );
   };
 
   return (
@@ -161,7 +186,7 @@ const ProductView = () => {
 
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-2xl sm:text-3xl font-bold text-gray-900">
-                ${product.price.toFixed(2)}
+                ${product.price}
               </span>
               <span className="text-sm sm:text-lg text-gray-500">
                 or ${(product.price / 6).toFixed(2)}/month
@@ -226,11 +251,11 @@ const ProductView = () => {
               <button className="w-full cursor-pointer bg-gray-900 text-white py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg font-medium hover:bg-black transition-colors duration-200">
                 Buy Now
               </button>
-              <button 
+              <button
                 onClick={handleAddToCart}
                 className={`w-full cursor-pointer py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 ${
-                  isInCart 
-                    ? "bg-green-500 text-white hover:bg-green-600" 
+                  isInCart
+                    ? "bg-green-500 text-white hover:bg-green-600"
                     : "border border-gray-300 text-gray-900 hover:bg-gray-50"
                 }`}
               >

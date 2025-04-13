@@ -5,13 +5,27 @@ import { useDispatch } from "react-redux";
 import { NavLink } from "react-router";
 import products from "../data/products.data.js";
 import ProductCard from "./ProductCard";
+import apiService from "../apis/fetchApis.js";
 
 const Products = () => {
+  const { getProducts } = apiService;
   const controls = useAnimation();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
+
+  console.log("Filtered products is:", filteredProducts);
+
+  useEffect(() => {
+    const getAllProducts = async () => {
+      const productData = await getProducts();
+      setFilteredProducts(productData?.data);
+    };
+
+    getAllProducts();
+  }, []);
 
   useEffect(() => {
     if (isInView) {
@@ -26,24 +40,24 @@ const Products = () => {
     } else {
       // Map category values to keywords to look for in product names/descriptions
       const categoryKeywords = {
-        "headphones": ["headphone", "earphone", "earbud"],
-        "speakers": ["speaker", "sound system", "audio system"],
-        "wearables": ["watch", "fitness tracker", "smart watch"],
-        "accessories": ["mouse", "keyboard", "power bank", "camera"]
+        headphones: ["headphone", "earphone", "earbud"],
+        speakers: ["speaker", "sound system", "audio system"],
+        wearables: ["watch", "fitness tracker", "smart watch"],
+        accessories: ["mouse", "keyboard", "power bank", "camera"],
       };
-      
+
       const keywords = categoryKeywords[selectedCategory] || [selectedCategory];
-      
-      const filtered = products.filter(product => {
+
+      const filtered = products.filter((product) => {
         const name = product.name.toLowerCase();
         const description = product.description?.toLowerCase() || "";
-        
+
         // Check if any of the keywords match in name or description
-        return keywords.some(keyword => 
-          name.includes(keyword) || description.includes(keyword)
+        return keywords.some(
+          (keyword) => name.includes(keyword) || description.includes(keyword)
         );
       });
-      
+
       setFilteredProducts(filtered);
     }
   }, [selectedCategory]);
@@ -72,20 +86,20 @@ const Products = () => {
       },
     },
   };
-  
+
   const titleVariants = {
     hidden: { y: -20, opacity: 0 },
-    visible: { 
-      y: 0, 
+    visible: {
+      y: 0,
       opacity: 1,
       transition: {
         type: "spring",
         stiffness: 100,
-        damping: 20
-      }
-    }
+        damping: 20,
+      },
+    },
   };
-  
+
   const categories = [
     { name: "All Products", value: "all" },
     { name: "Headphones", value: "headphones" },
@@ -93,7 +107,7 @@ const Products = () => {
     { name: "Wearables", value: "wearables" },
     { name: "Accessories", value: "accessories" },
   ];
-  
+
   const handleCategoryChange = (category) => {
     // Reset the animation controls when changing category
     controls.start("hidden").then(() => {
@@ -108,7 +122,7 @@ const Products = () => {
   return (
     <section className="py-16 bg-gradient-to-b from-gray-50/50 to-white">
       <div className="container px-4 mx-auto">
-        <motion.div 
+        <motion.div
           variants={titleVariants}
           initial="hidden"
           animate="visible"
@@ -118,17 +132,18 @@ const Products = () => {
             Featured Products
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Discover our collection of premium audio products and accessories designed to enhance your listening experience
+            Discover our collection of premium audio products and accessories
+            designed to enhance your listening experience
           </p>
         </motion.div>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
           className="flex flex-wrap justify-center gap-3 mb-12"
         >
-          {categories.map(category => (
+          {categories.map((category) => (
             <motion.button
               key={category.value}
               onClick={() => handleCategoryChange(category.value)}
@@ -152,21 +167,26 @@ const Products = () => {
           animate={controls}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8"
         >
-          {filteredProducts.length > 0 ? (
+          {filteredProducts.length >= 0 ? (
             filteredProducts.map((product) => (
-              <motion.div key={product.id} variants={itemVariants}>
+              <motion.div key={product._id} variants={itemVariants}>
                 <ProductCard product={product} />
               </motion.div>
             ))
           ) : (
-            <motion.div 
+            <motion.div
               variants={itemVariants}
-              className="col-span-full py-12 text-center">
+              className="col-span-full py-12 text-center"
+            >
               <ShoppingBag className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-              <p className="text-gray-500 mb-4">Try selecting a different category or check back later.</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No products found
+              </h3>
+              <p className="text-gray-500 mb-4">
+                Try selecting a different category or check back later.
+              </p>
               <motion.button
-                onClick={() => handleCategoryChange('all')}
+                onClick={() => handleCategoryChange("all")}
                 className="px-6 py-2.5 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -176,8 +196,8 @@ const Products = () => {
             </motion.div>
           )}
         </motion.div>
-        
-        <motion.div 
+
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
