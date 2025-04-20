@@ -1,80 +1,31 @@
-import React, { useEffect, useRef, useState } from "react";
-import { motion, useAnimation, useInView } from "framer-motion";
-import { ShoppingBag } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { NavLink } from "react-router";
-import products from "../data/products.data.js";
-import ProductCard from "./ProductCard";
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import apiService from "../apis/fetchApis.js";
 
-const Products = () => {
+const ProductCard = () => {
   const { getProducts } = apiService;
-  const controls = useAnimation();
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.1 });
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [products, setProducts] = useState([]);
+  // State to track which image is currently being shown for each product
 
-
-  console.log("Filtered products is:", filteredProducts);
+  console.log(
+    "Product Data:",
+    products.map(
+      (product) => Array.isArray(product.images) && product.images[0].url
+    )
+  );
 
   useEffect(() => {
     const getAllProducts = async () => {
       const productData = await getProducts();
-      setFilteredProducts(productData?.data);
+      setProducts(productData?.data);
     };
 
     getAllProducts();
   }, []);
 
-  useEffect(() => {
-    if (isInView) {
-      controls.start("visible");
-    }
-  }, [isInView, controls]);
-
-  // Apply category filtering whenever selectedCategory changes
-  useEffect(() => {
-    if (selectedCategory === "all") {
-      setFilteredProducts(products);
-    } else {
-      // Map category values to keywords to look for in product names/descriptions
-      const categoryKeywords = {
-        headphones: ["headphone", "earphone", "earbud"],
-        speakers: ["speaker", "sound system", "audio system"],
-        wearables: ["watch", "fitness tracker", "smart watch"],
-        accessories: ["mouse", "keyboard", "power bank", "camera"],
-      };
-
-      const keywords = categoryKeywords[selectedCategory] || [selectedCategory];
-
-      const filtered = products.filter((product) => {
-        const name = product.name.toLowerCase();
-        const description = product.description?.toLowerCase() || "";
-
-        // Check if any of the keywords match in name or description
-        return keywords.some(
-          (keyword) => name.includes(keyword) || description.includes(keyword)
-        );
-      });
-
-      setFilteredProducts(filtered);
-    }
-  }, [selectedCategory]);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.05,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 30, opacity: 0 },
+  // Animation variants for the card
+  const cardVariants = {
+    hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
@@ -85,137 +36,182 @@ const Products = () => {
         duration: 0.4,
       },
     },
-  };
-
-  const titleVariants = {
-    hidden: { y: -20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
+    hover: {
+      y: -8,
       transition: {
         type: "spring",
         stiffness: 100,
-        damping: 20,
+        damping: 10,
       },
     },
   };
 
-  const categories = [
-    { name: "All Products", value: "all" },
-    { name: "Headphones", value: "headphones" },
-    { name: "Speakers", value: "speakers" },
-    { name: "Wearables", value: "wearables" },
-    { name: "Accessories", value: "accessories" },
-  ];
-
-  const handleCategoryChange = (category) => {
-    // Reset the animation controls when changing category
-    controls.start("hidden").then(() => {
-      setSelectedCategory(category);
-      // Give a slight delay before showing the new products
-      setTimeout(() => {
-        controls.start("visible");
-      }, 100);
-    });
+  // Animation for the button
+  const buttonVariants = {
+    hover: {
+      scale: 1.05,
+      backgroundColor: "#4338ca", // Indigo-700
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 15,
+      },
+    },
+    tap: {
+      scale: 0.95,
+    },
   };
 
   return (
-    <section className="py-16 bg-gradient-to-b from-gray-50/50 to-white">
-      <div className="container px-4 mx-auto">
-        <motion.div
-          variants={titleVariants}
-          initial="hidden"
-          animate="visible"
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Featured Products
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Discover our collection of premium audio products and accessories
-            designed to enhance your listening experience
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex flex-wrap justify-center gap-3 mb-12"
-        >
-          {categories.map((category) => (
-            <motion.button
-              key={category.value}
-              onClick={() => handleCategoryChange(category.value)}
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                selectedCategory === category.value
-                  ? "bg-indigo-600 text-white shadow-md"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {category.name}
-            </motion.button>
-          ))}
-        </motion.div>
-
-        <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={controls}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8"
-        >
-          {filteredProducts.length >= 0 ? (
-            filteredProducts.map((product) => (
-              <motion.div key={product._id} variants={itemVariants}>
-                <ProductCard product={product} />
-              </motion.div>
-            ))
-          ) : (
-            <motion.div
-              variants={itemVariants}
-              className="col-span-full py-12 text-center"
-            >
-              <ShoppingBag className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No products found
-              </h3>
-              <p className="text-gray-500 mb-4">
-                Try selecting a different category or check back later.
-              </p>
-              <motion.button
-                onClick={() => handleCategoryChange("all")}
-                className="px-6 py-2.5 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                View All Products
-              </motion.button>
-            </motion.div>
-          )}
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-16 text-center"
-        >
-          <NavLink to="/products">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors duration-300 shadow-md"
-            >
-              View All Products
-            </motion.button>
-          </NavLink>
-        </motion.div>
+    <>
+      <div className="text-center mt-10 mb-5 font-bold text-4xl text-gray-800 tracking-wide">
+        <h2>Featured Products</h2>
       </div>
-    </section>
+      <div className="m-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {products.map((product) => (
+          <motion.div
+            key={product.id}
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover="hover"
+            className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+          >
+            <div className="relative">
+              {/* Show the current image from the array */}
+              <img
+                src={
+                  // Check for various possible image field structures
+                  Array.isArray(product.images) && product.images.length > 0
+                    ? product.images[0].url || product.images[0] // If first element is an object with url or direct URL
+                    : product.images?.url || // If images is an object with url property
+                      product.image?.url || // If image is an object with url property
+                      (Array.isArray(product.image) && product.image.length > 0
+                        ? product.image[0].url || product.image[0] // If image is array
+                        : product.image) || // If image is a direct URL
+                      "https://via.placeholder.com/300" // Fallback
+                }
+                alt={`${product.name} image`}
+                className="w-full h-60 object-cover object-center"
+              />
+
+              {/* Image navigation buttons */}
+              {product.image && product.image.length > 1 && (
+                <>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      prevImage(product.id);
+                    }}
+                    className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/70 rounded-full p-1 hover:bg-white transition-colors"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      nextImage(product.id);
+                    }}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/70 rounded-full p-1 hover:bg-white transition-colors"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+
+                  {/* Image indicator dots */}
+                  <div className="absolute bottom-2 left-0 right-0 flex justify-center space-x-2">
+                    {product.image.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`h-2 w-2 rounded-full ${
+                          index === currentImageIndex[product.id]
+                            ? "bg-white"
+                            : "bg-white/50"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {product.discount && (
+                <span className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">
+                  {product.discount}% OFF
+                </span>
+              )}
+            </div>
+
+            <div className="p-5">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
+                  {product.name}
+                </h3>
+                {product.rating && (
+                  <div className="flex items-center">
+                    <span className="text-amber-500">★</span>
+                    <span className="text-sm ml-1 text-gray-700">
+                      {product.rating}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                {product.description || "No description available"}
+              </p>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-lg font-bold text-gray-900">
+                    ${product.price?.toFixed(2) || "0.00"}
+                  </span>
+                  {product.oldPrice && (
+                    <span className="text-sm text-gray-500 line-through ml-2">
+                      ${product.oldPrice?.toFixed(2)}
+                    </span>
+                  )}
+                </div>
+
+                <motion.button
+                  variants={buttonVariants}
+                  whileHover="hover"
+                  whileTap="tap"
+                  className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg shadow-sm"
+                >
+                  Add to Cart
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </>
   );
 };
 
-export default Products;
+export default ProductCard;
