@@ -160,7 +160,18 @@ const Cart = () => {
                       <motion.img
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.3 }}
-                        src={item.image}
+                        src={
+                          // Check for various possible image field structures
+                          Array.isArray(item.images) && item.images.length > 0
+                            ? item.images[0].url || item.images[0] // If first element is an object with url or direct URL
+                            : item.images?.url || // If images is an object with url property
+                              item.image?.url || // If image is an object with url property
+                              (Array.isArray(item.image) &&
+                              item.image.length > 0
+                                ? item.image[0].url || item.image[0] // If image is array
+                                : item.image) || // If image is a direct URL
+                              "https://via.placeholder.com/300" // Fallback
+                        }
                         alt={item.name}
                         className="w-full h-full object-cover"
                       />

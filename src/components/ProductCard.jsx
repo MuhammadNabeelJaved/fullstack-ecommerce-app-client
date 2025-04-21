@@ -1,51 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { addToCart, selectCartItems } from "../redux/features/cartSlice";
 import {
-  RiShoppingCart2Line,
   RiStarFill,
   RiHeartLine,
   RiHeartFill,
   RiEyeLine,
-  RiCheckLine,
 } from "react-icons/ri";
-import apiService from "../apis/fetchApis.js";
+import { BsCartPlusFill } from "react-icons/bs";
 
 const ProductCard = ({ product }) => {
-  const dispatch = useDispatch();
-  const cartItems = useSelector(selectCartItems);
-  console.log("Cart Items is:", cartItems);
-  const productId = cartItems.map((item) => item.id);
-  const quantity = cartItems.map((item) => item.quantity);
-  const cartData = {
-    productId: productId,
-    quantity: quantity,
-  };
-  const isInCart = cartItems.some((item) => item.id === product.id);
   const [isWishListed, setIsWishListed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const { addToCartItem } = apiService;
-
-  console.log("Cart item is", cartItems);
-
-  // addToCartItem(cartData)
-
-  // useEffect(() => {
-  //   const addToCart = async () => {
-  //
-  //   };
-  // }, []);
-
-  const handleAddToCart = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch(addToCart(product));
-    await addToCartItem({cartData}).then((response) => {
-      console.log("Added to cart", response);
-    });
-  };
 
   const toggleWishlist = (e) => {
     e.preventDefault();
@@ -53,192 +19,140 @@ const ProductCard = ({ product }) => {
     setIsWishListed(!isWishListed);
   };
 
+  const handleCartClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Add your cart functionality here
+    console.log("Add to cart clicked for:", product.name);
+  };
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="group relative w-full h-full"
+      transition={{ duration: 0.3 }}
+      className="group relative w-full"
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
       <Link to={`/product/view/${product._id}`}>
-        <div className="bg-white rounded-xl overflow-hidden h-full flex flex-col shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100">
+        <div className="bg-white rounded-md overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
           {/* Product Image Section */}
           <div className="relative overflow-hidden aspect-[4/3]">
-            {/* Tags Section */}
-            <div className="absolute z-10 top-3 left-3 flex flex-col gap-2">
-              {product.tag && (
-                <motion.span
-                  className="bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-xs py-1.5 px-3 rounded-full font-medium"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  {product.tag}
-                </motion.span>
-              )}
-
-              {product.offer && (
-                <motion.span
-                  className="bg-gradient-to-r from-green-600 to-green-500 text-white text-xs py-1.5 px-3 rounded-full font-medium"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  {product.offer}
-                </motion.span>
-              )}
-            </div>
+            {/* Tag */}
+            {product.tag && (
+              <motion.span
+                className="absolute z-10 top-2 left-2 bg-black text-white text-[10px] py-0.5 px-2 rounded-full font-medium"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 }}
+              >
+                {product.tag}
+              </motion.span>
+            )}
 
             {/* Wishlist Button */}
             <motion.button
-              whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="absolute z-10 top-3 right-3 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-white transition-all duration-300"
+              className="absolute z-10 top-2 right-2 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm"
               onClick={toggleWishlist}
             >
               {isWishListed ? (
-                <RiHeartFill className="text-red-500 text-lg" />
+                <RiHeartFill className="text-red-500 text-sm" />
               ) : (
-                <RiHeartLine className="text-gray-700 text-lg" />
+                <RiHeartLine className="text-gray-700 text-sm" />
               )}
             </motion.button>
 
-            {/* Product Image with Overlay */}
-            <div className="w-full h-full relative">
-              <motion.img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-full object-cover"
-                whileHover={{ scale: 1.07 }}
-                transition={{ duration: 0.5 }}
-              />
+            {/* Product Image */}
+            <img
+              src={
+                Array.isArray(product.images) && product.images.length > 0
+                  ? product.images[0].url || product.images[0]
+                  : product.images?.url ||
+                    product.image?.url ||
+                    (Array.isArray(product.image) && product.image.length > 0
+                      ? product.image[0].url || product.image[0]
+                      : product.image) ||
+                    "https://via.placeholder.com/300"
+              }
+              alt={product.name}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
 
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: isHovered ? 1 : 0 }}
-                transition={{ duration: 0.3 }}
-              />
-            </div>
-
-            {/* Quick Actions Buttons */}
+            {/* Quick View Button */}
             <AnimatePresence>
               {isHovered && (
                 <motion.div
-                  className="absolute bottom-0 left-0 w-full p-4 flex justify-center items-center"
-                  initial={{ opacity: 0, y: 20 }}
+                  className="absolute bottom-2 left-0 w-full flex justify-center"
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  transition={{ duration: 0.3 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <motion.div
-                    className="flex items-center gap-3"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.1, staggerChildren: 0.1 }}
-                  >
+                  <Link to={`/product/view/${product._id}`}>
                     <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="bg-white/90 backdrop-blur-sm text-gray-800 p-2.5 rounded-full hover:bg-white transition-all duration-300 shadow-md"
-                      onClick={handleAddToCart}
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="bg-white/90 text-gray-800 py-1 px-3 rounded-full shadow-sm flex items-center gap-1 text-xs font-medium"
                     >
-                      {isInCart ? (
-                        <RiCheckLine className="text-lg text-green-600" />
-                      ) : (
-                        <RiShoppingCart2Line className="text-lg" />
-                      )}
+                      <RiEyeLine /> View
                     </motion.button>
-
-                    <Link
-                      to={`/product/view/${product._id}`}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="bg-white/90 backdrop-blur-sm text-gray-800 p-2.5 rounded-full hover:bg-white transition-all duration-300 shadow-md"
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.3, delay: 0.1 }}
-                      >
-                        <RiEyeLine className="text-lg" />
-                      </motion.button>
-                    </Link>
-                  </motion.div>
+                  </Link>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
           {/* Product Info Section */}
-          <div className="p-5 flex flex-col justify-between flex-grow">
-            <div>
-              <div className="mb-2">
-                <h3 className="text-lg font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors duration-300 line-clamp-1">
-                  {product.name}
-                </h3>
-              </div>
+          <div className="p-3 flex flex-col flex-grow">
+            {/* Category & Title */}
+            {product.category && (
+              <span className="text-[10px] text-gray-500 uppercase tracking-wider">
+                {product.category}
+              </span>
+            )}
 
-              {/* Rating */}
-              <div className="flex items-center mb-3">
-                <div className="flex items-center text-yellow-400">
-                  {[...Array(5)].map((_, index) => (
-                    <RiStarFill
-                      key={index}
-                      className={`${
-                        index < Math.floor(product.rating)
-                          ? "text-yellow-400"
-                          : "text-gray-300"
-                      } 
-                                mr-0.5 text-sm`}
-                    />
-                  ))}
-                </div>
-                <span className="text-xs text-gray-500 ml-2">
-                  ({product.reviews})
-                </span>
-              </div>
+            <h3 className="text-sm font-medium text-gray-900 line-clamp-1 mt-0.5">
+              {product.name}
+            </h3>
 
-              {/* Short Description - hidden on small screens */}
-              <p className="text-gray-600 text-sm mb-4 line-clamp-2 hidden sm:block">
-                {product.description?.substring(0, 80)}...
-              </p>
+            {/* Rating - Simplified */}
+            <div className="flex items-center my-1">
+              <div className="flex text-yellow-400">
+                {[...Array(5)].map((_, index) => (
+                  <RiStarFill
+                    key={index}
+                    className={`${
+                      index < Math.floor(product.rating || 0)
+                        ? "text-yellow-400"
+                        : "text-gray-200"
+                    } text-[10px] mr-0.5`}
+                  />
+                ))}
+              </div>
+              <span className="text-[10px] text-gray-500 ml-1">
+                ({product.reviews || 0})
+              </span>
             </div>
 
-            {/* Price and Add to Cart Section */}
-            <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
-              <div className="flex flex-col">
-                <span className="text-xl font-bold text-gray-900">
-                  ${product.price.toFixed(2)}
+            {/* Price and Cart Section */}
+            <div className="flex items-center justify-between mt-auto pt-1">
+              <div className="flex items-center">
+                <span className="text-sm font-semibold text-gray-900">
+                  ${product.price?.toFixed(2) || "0.00"}
                 </span>
                 {product.oldPrice && (
-                  <span className="text-sm text-gray-500 line-through">
+                  <span className="text-xs text-gray-500 line-through ml-2">
                     ${product.oldPrice.toFixed(2)}
                   </span>
                 )}
               </div>
-
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleAddToCart}
-                className={`p-2.5 rounded-lg flex items-center justify-center transition-all duration-300 shadow-sm ${
-                  isInCart
-                    ? "bg-green-500 text-white hover:bg-green-600"
-                    : "bg-indigo-600 text-white hover:bg-indigo-700"
-                }`}
+                whileTap={{ scale: 0.9 }}
+                className="p-1.5 text-gray-700 hover:text-indigo-600 transition-colors duration-200"
+                onClick={handleCartClick}
               >
-                {isInCart ? (
-                  <RiCheckLine className="text-lg" />
-                ) : (
-                  <RiShoppingCart2Line className="text-lg" />
-                )}
+                <BsCartPlusFill className="text-base" />
               </motion.button>
             </div>
           </div>
