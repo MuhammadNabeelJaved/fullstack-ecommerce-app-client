@@ -123,9 +123,9 @@ export const updateUserPassword = async (passwordData) => {
 };
 
 // Cart APIs
-export const addToCartItem = async (cartItemData) => {
+export const addToCartItem = async (cartItemData,token) => {
   try {
-    const response = await axios.post(`http://localhost:3000/api/v1/cart/add-to-cart`, cartItemData);
+    const response = await axios.post(`http://localhost:3000/api/v1/cart/add-to-cart`, cartItemData, {headers:token});
     return response.data;
   } catch (error) {
     throw error;

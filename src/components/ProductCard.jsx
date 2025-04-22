@@ -1,17 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSelector, useDispatch } from "react-redux";
+import { addToCart } from "../redux/features/cartSlice.js";
 import {
   RiStarFill,
   RiHeartLine,
   RiHeartFill,
   RiEyeLine,
 } from "react-icons/ri";
-import { BsCartPlusFill } from "react-icons/bs";
+import { BsCartPlusFill, BsCartCheckFill } from "react-icons/bs";
+import apiService from "../apis/fetchApis.js";
+import { useAuth } from "../contextApi/Context.jsx";
 
 const ProductCard = ({ product }) => {
+  const { addToCartItem } = apiService;
+  const { token } = useAuth();
   const [isWishListed, setIsWishListed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const dispatch = useDispatch();
+  
+  const cartItems = useSelector((state) => state.cart.items)
 
   const toggleWishlist = (e) => {
     e.preventDefault();
@@ -22,9 +31,26 @@ const ProductCard = ({ product }) => {
   const handleCartClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    // Make sure the product has all required fields
+    // (especially id which is used in your reducer)
+    dispatch(
+      addToCart({
+        ...product,
+        id: product._id, // Ensure product has an id field
+      })
+    );
+    addToCartItem({
+      productId: product._id, // Ensure product has an id field
+      quantity: product.quantity || 1,
+    },token);
     // Add your cart functionality here
-    console.log("Add to cart clicked for:", product.name);
+    console.log("Add to cart clicked for:", product._id);
   };
+
+  useEffect(() => {
+    // Only log when cart items change
+    console.log("Cart Items:", cartItems);
+  }, [cartItems]);
 
   return (
     <motion.div
@@ -152,7 +178,13 @@ const ProductCard = ({ product }) => {
                 className="p-1.5 text-gray-700 hover:text-indigo-600 transition-colors duration-200"
                 onClick={handleCartClick}
               >
-                <BsCartPlusFill className="text-base" />
+                {cartItems.some(
+                  (item) => item.id === product._id || item._id === product._id
+                ) ? (
+                  <BsCartCheckFill className="text-3xl cursor-pointer text-green-600" />
+                ) : (
+                  <BsCartPlusFill className="text-3xl cursor-pointer text-blue-500" />
+                )}
               </motion.button>
             </div>
           </div>

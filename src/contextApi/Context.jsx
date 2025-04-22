@@ -9,16 +9,20 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState(null)
 
   console.log("User:", user);
+  console.log("Token:", token);
 
   // Check if user is already logged in - simplified to a single function
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
 
+    
     console.log("Client Access Token:", accessToken);
     console.log("Client Refresh Token:", refreshToken);
+ 
 
     if (!(accessToken && refreshToken)) {
       console.log("No tokens found");
@@ -34,6 +38,7 @@ export const AuthProvider = ({ children }) => {
         console.log("Tokens Response data", response.data?.data);
         localStorage.setItem("accessToken", response.data?.data?.accessToken);
         localStorage.setItem("refreshToken", response.data?.data?.refreshToken);
+        setToken(response.data?.data?.refreshToken);
         setUser(response.data?.data?.user);
         setLoading(false);
       } catch (error) {
@@ -88,6 +93,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         loading,
         isLoggedIn,
+        token
       }}
     >
       {children}

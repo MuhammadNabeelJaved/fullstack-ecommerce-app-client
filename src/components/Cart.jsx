@@ -27,24 +27,16 @@ const Cart = () => {
   const [itemBeingRemoved, setItemBeingRemoved] = useState(null);
   const { addToCartItem } = apiService;
 
-  console.log(
-    "Cart Items is:",
-    cartItems.map((item) => item._id)
-  );
-  console.log(
-    "Total Amount is:",
-    cartItems.map((item) => item.totalPrice)
-  );
-
-  useEffect(() => {
-    addToCartItem({ productId: cartItems._id, quantity: cartItems.quantity })
-      .then((response) => {
-        console.log("Cart Items added to the server:", response.data);
-      })
-      .catch((error) => {
-        console.error("Error adding cart items to the server:", error);
-      });
-  }, [cartItems]);
+  console.log("Cart page Items:", cartItems);
+  // useEffect(() => {
+  //   addToCartItem({ productId: cartItems._id, quantity: cartItems.quantity })
+  //     .then((response) => {
+  //       console.log("Cart Items added to the server:", response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error adding cart items to the server:", error);
+  //     });
+  // }, [cartItems]);
 
   const handleQuantityChange = (id, quantity) => {
     if (quantity < 1) return;
